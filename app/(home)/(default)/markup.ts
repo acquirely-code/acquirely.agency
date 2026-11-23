@@ -36,6 +36,21 @@ const results: [string, string, string, string, string][] = [
   [P.refresh, "#14B8A6", "A system that compounds", "Every winner feeds the next test. Every test feeds the next scale. The longer you run it, the better it gets.", "NoStrain: 1.36x → 2.65x"],
 ];
 
+// Client websites for the scrolling phone-mockup strip (same as acquirely.in). [image prefix, url bar, name, category]
+const sites: [string, string, string, string][] = [
+  ["09-tactow", "tactow.in", "TacTow", "3D wooden puzzles"],
+  ["33-rsa-aviation", "rightsourceaviation.com", "RSA Aviation", "Pilot training academy"],
+  ["10-gharaana", "gharaana", "Gharaana", "Furniture"],
+  ["30-international-schooling", "internationalschooling.org", "International Schooling", "Online school"],
+  ["11-patoola", "patoola", "Patoola", "Indo-Western fashion"],
+  ["31-kashti", "kashti.com", "Kashti", "Fintech app"],
+  ["12-creste-kids", "crestekids.com", "Creste Kids", "DIY craft kits"],
+  ["29-global-proptech", "globalproptech.in", "Global Proptech", "Luxury real estate · Gurugram"],
+  ["32-nostrain", "nostrain.in", "NoStrain", "Footwear"],
+  ["13-sevora", "sevora", "Sevora", "Fashion"],
+  ["14-sofara", "sofara", "Sofara", "Furniture · Canada"],
+];
+
 const tickerItem = ([img, alt, roas]: [string, string, string]) =>
   `<span><img src="${IMG}/${img}" alt="${alt} logo">${roas}</span>`;
 
@@ -63,6 +78,16 @@ ${nav([["#services", "What We Do"], ["#flywheel", "A3 System"], ["#results", "Ca
       const [before, after] = roas.replace("ROAS ", "").split(" to ");
       return [`${name}<small>ROAS</small>`, before, after, `+${Math.round((+after / +before - 1) * 100)}%`];
     }))}
+  </div>
+</section>
+
+<!-- ============ CLIENT WEBSITES (scrolling phone mockups; useLandingScripts duplicates the track for the loop) ============ -->
+<section class="trusted" aria-label="Brands growing with Acquirely">
+  <p class="trusted-h">Trusted by founders in India, Canada &amp; the USA</p>
+  <div class="ph-viewport">
+    <div class="ph-track">${sites.map(([img, url, name, cat]) => `
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>${url}</b><span></span></div><div class="ph-screen"><img src="${IMG}/${img}-website-on-mobile.jpg" alt="${name} website on mobile" loading="lazy"></div></div><figcaption><b>${name}</b><span class="ph-cat">${cat}</span></figcaption></figure>`).join("")}
+    </div>
   </div>
 </section>
 
