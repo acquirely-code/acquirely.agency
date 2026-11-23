@@ -1,5 +1,6 @@
 import { withImgDims } from "@/lib/img-dims";
-import { BOOK, IMG, ext, ARROW, P, icon, nav, a3Section, inHouse, footer, mcta } from "@/app/ecommerce/shared";
+import type { HubRow } from "@/app/ecommerce/shared";
+import { BOOK, IMG, ext, ARROW, P, icon, nav, hub, a3Section, inHouse, footer, mcta } from "@/app/ecommerce/shared";
 // Page markup for the homepage, rendered by Landing (app/ecommerce/Landing.tsx).
 
 const socials: [string, string, string, string][] = [
@@ -58,7 +59,10 @@ ${nav([["#services", "What We Do"], ["#flywheel", "A3 System"], ["#results", "Ca
         <div class="blogos" aria-label="Founders scaling with Acquirely">${[1, 2, 3, 4, 5].map((n) => `<span class="bl face"><img src="${IMG}/founder${n}.png" alt="User ${n}"></span>`).join("")}</div>
       </div>
     </div>
-    <div><img class="d-hero-img" src="${IMG}/main-hero.png" alt="Performance Dashboard Preview"></div>
+    ${hub("Real Case Studies", "ROAS before → after", studies.map(([, name, roas]): HubRow => {
+      const [before, after] = roas.replace("ROAS ", "").split(" to ");
+      return [`${name}<small>ROAS</small>`, before, after, `+${Math.round((+after / +before - 1) * 100)}%`];
+    }))}
   </div>
 </section>
 
@@ -69,35 +73,6 @@ ${nav([["#services", "What We Do"], ["#flywheel", "A3 System"], ["#results", "Ca
     <div class="marquee">${[...studies, ...studies, ...studies, ...studies].map(tickerItem).join("")}</div>
   </div>
 </div>
-
-<!-- ============ WHAT WE ACTUALLY DO ============ -->
-<section class="band white" id="services">
-  <div class="wrap" data-filter-group>
-    <div class="head">
-      <span class="eyebrow">What we actually do</span>
-      <h2>Not just ads. A system that <span class="grad">compounds.</span></h2>
-      <p>Most agencies run campaigns. We build the full growth engine — from creative testing to funnel to scale.</p>
-    </div>
-    <div class="d-tabs" role="group" aria-label="Filter services">
-      <button type="button" data-filter="all" aria-pressed="true">All services</button>
-      <button type="button" data-filter="paid" aria-pressed="false">Paid ads</button>
-      <button type="button" data-filter="funnel" aria-pressed="false">Funnel</button>
-      <button type="button" data-filter="scale" aria-pressed="false">Scale</button>
-    </div>
-    <div class="hm-svcs">${services.map(([ic, cat, no, t, d, badge], i) => `
-      <div class="card hm-svc" data-cat="${cat}">
-        <span class="d-no" aria-hidden="true">${no}</span>
-        <span class="ic${i % 2 ? " o" : ""}">${icon(ic, i % 2 ? "#F37513" : "#2B7FFF")}</span>
-        <h3>${t}</h3>
-        <p>${d}</p>
-        <span class="d-badge">${badge}</span>
-      </div>`).join("")}
-    </div>
-  </div>
-</section>
-
-<!-- ============ HOW WE HELP YOU GROW ============ -->
-${a3Section("flywheel", "band")}
 
 <!-- ============ NUMBERS (dark) ============ -->
 <section class="band dark" id="results">
@@ -123,7 +98,45 @@ ${a3Section("flywheel", "band")}
       <div class="card d-card reveal"><span class="ic">${icon(ic, c)}</span><h3>${t}</h3><p>${d}</p><span class="d-badge">${badge}</span></div>`).join("")}
     </div>
 
-    <div class="dcard" id="book" style="margin-top:48px">
+  </div>
+</section>
+
+<!-- ============ WHAT WE ACTUALLY DO ============ -->
+<section class="band white" id="services">
+  <div class="wrap" data-filter-group>
+    <div class="head">
+      <span class="eyebrow">What we actually do</span>
+      <h2>Not just ads. A system that <span class="grad">compounds.</span></h2>
+      <p>Most agencies run campaigns. We build the full growth engine — from creative testing to funnel to scale.</p>
+    </div>
+    <div class="d-tabs" role="group" aria-label="Filter services">
+      <button type="button" data-filter="all" aria-pressed="true">All services</button>
+      <button type="button" data-filter="paid" aria-pressed="false">Paid ads</button>
+      <button type="button" data-filter="funnel" aria-pressed="false">Funnel</button>
+      <button type="button" data-filter="scale" aria-pressed="false">Scale</button>
+    </div>
+    <div class="hm-svcs">${services.map(([ic, cat, no, t, d, badge], i) => `
+      <div class="card hm-svc reveal" data-cat="${cat}">
+        <span class="d-no" aria-hidden="true">${no}</span>
+        <span class="ic${i % 2 ? " o" : ""}">${icon(ic, i % 2 ? "#F37513" : "#2B7FFF")}</span>
+        <h3>${t}</h3>
+        <p>${d}</p>
+        <span class="d-badge">${badge}</span>
+      </div>`).join("")}
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW WE HELP YOU GROW ============ -->
+${a3Section("flywheel", "band")}
+
+<!-- ============ IN-HOUSE COST ============ -->
+${inHouse()}
+
+<!-- ============ BOOK ============ -->
+<section class="band" id="book">
+  <div class="wrap">
+    <div class="dcard">
       <div>
         <h2>Ready to see if this works for your brand?</h2>
         <p style="margin-top:12px">We'll audit your current funnel and ad account — no pitch, no fluff. Just an honest look at what's working and what isn't.</p>
@@ -141,9 +154,6 @@ ${a3Section("flywheel", "band")}
     </div>
   </div>
 </section>
-
-<!-- ============ IN-HOUSE COST ============ -->
-${inHouse()}
 
 ${footer([["#services", "What We Do"], ["#flywheel", "A3 System"]])}
 
