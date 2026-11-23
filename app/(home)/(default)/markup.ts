@@ -51,9 +51,6 @@ const sites: [string, string, string, string][] = [
   ["14-sofara", "sofara", "Sofara", "Furniture · Canada"],
 ];
 
-const tickerItem = ([img, alt, roas]: [string, string, string]) =>
-  `<span><img src="${IMG}/${img}" alt="${alt} logo">${roas}</span>`;
-
 const markup = `
 <!-- ============ SOCIAL RAIL ============ -->
 <div class="d-social" aria-label="Acquirely on social media">${socials.map(([href, bg, label, path]) => `
@@ -90,14 +87,6 @@ ${nav([["#services", "What We Do"], ["#flywheel", "A3 System"], ["#results", "Ca
     </div>
   </div>
 </section>
-
-<!-- ============ CASE STUDY TICKER ============ -->
-<div class="strip" aria-label="Real case studies">
-  <div class="strip-in">
-    <span class="lbl">Real Case Studies:</span>
-    <div class="marquee">${[...studies, ...studies, ...studies, ...studies].map(tickerItem).join("")}</div>
-  </div>
-</div>
 
 <!-- ============ NUMBERS (dark) ============ -->
 <section class="band dark" id="results">
