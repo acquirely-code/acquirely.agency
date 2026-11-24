@@ -74,7 +74,7 @@ export function siteFooter() {
       </div>
       <div><p class="fh">Services</p><ul><li><a href="/ecommerce">Ecommerce Growth</a></li><li><a href="/lead-gen">Lead generation</a></li></ul></div>
       <div><p class="fh">Pages</p><ul><li><a href="/aboutus">About us</a></li><li><a href="/privacy-policy">Privacy policy</a></li><li><a href="/term-and-services">Terms and conditions</a></li></ul></div>
-      <div><p class="fh">Contact</p><ul><li><a href="tel:+12368779035">+1 236 877 9035</a></li><li><a href="https://acquirely.ca">https://acquirely.ca/</a></li><li>Vancouver, Canada</li></ul></div>
+      <div><p class="fh">Contact</p><ul><li><a href="tel:+12368779035">+1 236 877 9035</a></li><li>Vancouver, Canada</li></ul></div>
     </div>
     <div class="fine">
       <p>© 2026 Acquirely. All rights reserved.</p>

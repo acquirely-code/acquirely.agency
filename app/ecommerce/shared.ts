@@ -191,7 +191,7 @@ export const footer = (onPage: [string, string][]) => `
       </div>
       <div><p class="fh">Quick Links</p><ul>${onPage.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}<li><a href="/ecommerce">Ecommerce</a></li><li><a href="/lead-gen">Lead Generation</a></li><li><a href="/aboutus">About us</a></li></ul></div>
       <div><p class="fh">Legal</p><ul><li><a href="/term-and-services">Terms &amp; Conditions</a></li><li><a href="/privacy-policy">Privacy Policy</a></li></ul></div>
-      <div><p class="fh">Contact</p><ul><li><a href="tel:+12368779035">+1 236 877 9035</a></li><li><a href="https://acquirely.ca">https://acquirely.ca/</a></li><li>Vancouver, Canada</li></ul></div>
+      <div><p class="fh">Contact</p><ul><li><a href="tel:+12368779035">+1 236 877 9035</a></li><li>Vancouver, Canada</li></ul></div>
     </div>
     <div class="fine">
       <p>© 2025 Acquirely. All rights reserved. Built for Growth.</p>
