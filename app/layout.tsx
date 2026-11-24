@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
+import { THEME_INIT } from "./ecommerce/theme";
 import { GoogleTagManager } from '@next/third-parties/google';
 
 const defaultUrl = process.env.VERCEL_URL
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         {/* Meta Pixel Script */}
       </head>
       <body className="min-h-screen bg-[#f7f9fc] text-slate-950 antialiased">

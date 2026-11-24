@@ -20,14 +20,6 @@
 /* Case-study ticker */
 .ecom .strip .marquee img{height:26px;width:auto;max-width:none;flex:none}
 
-/* Fixed social rail (homepage) */
-.ecom .d-social{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:35;display:grid;gap:2px}
-.ecom .d-social a{display:flex;align-items:center;gap:10px;width:150px;margin-right:-104px;padding:12px 14px;border-radius:8px 0 0 8px;color:#fff;font-weight:700;font-size:14px;text-decoration:none;transition:margin .25s}
-.ecom .d-social a:hover,.ecom .d-social a:focus-visible{margin-right:0}
-.ecom .d-social svg{flex:none}
-@media (max-width:760px){.ecom .d-social{display:none}
-}
-
 /* Tabs (services filter) */
 .ecom .d-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;width:max-content;max-width:100%;margin:-20px auto 32px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:5px;box-shadow:var(--shadow)}
 .ecom .d-tabs button{border:0;cursor:pointer;border-radius:9999px;padding:10px 18px;min-height:44px;font-family:var(--display);font-weight:700;font-size:14px;background:transparent;color:var(--ink)}
@@ -39,21 +31,13 @@
 .ecom .d-badge.o{color:#C2410C;background:var(--orange-soft)}
 
 /* A3 phases */
-.ecom .d-phases{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:14px;align-items:stretch}
-@media (max-width:900px){.ecom .d-phases{grid-template-columns:1fr}
-.ecom .d-phase-arrow{display:none}
-}
-.ecom .d-phase-arrow{display:grid;place-items:center;color:#CBD5E1}
-.ecom .d-phase{font:inherit;text-align:left;cursor:pointer;padding:26px;display:grid;gap:8px;align-content:start;position:relative;color:var(--text);transition:transform .2s,box-shadow .2s,border-color .2s}
-.ecom .d-phase:hover{transform:translateY(-2px)}
-.ecom .d-phase[aria-pressed="true"]{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(99,102,241,.18),0 18px 40px -20px rgba(79,70,229,.45)}
-.ecom .d-phase .d-phase-n{position:absolute;top:14px;right:20px;font-family:var(--display);font-weight:800;font-size:56px;line-height:1;color:rgba(15,23,42,.05)}
-.ecom .d-phase .ic{width:44px;height:44px;border-radius:12px;background:var(--blue-soft);display:grid;place-items:center;margin-bottom:6px}
-.ecom .d-phase .ic.o{background:var(--orange-soft)}
-.ecom .d-phase small{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo-2)}
-.ecom .d-phase h3{font-size:24px}
-.ecom .d-phase p{font-size:15px}
-.ecom .d-phase .d-badge{margin-top:6px;color:#C2410C;background:var(--orange-soft)}
+.ecom .d-stage{font:inherit;text-align:left;cursor:pointer;color:var(--text);align-content:start}
+.ecom .d-stage[aria-pressed="true"]{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(99,102,241,.18)}
+.ecom .d-stage-b{display:grid;gap:4px;justify-items:start}
+.ecom .d-stage small{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo-2)}
+.ecom .d-stage b{font-family:var(--display);font-weight:700;font-size:16.5px;color:var(--ink)}
+.ecom .d-stage .d-stage-b > span{font-size:14.5px;color:var(--muted)}
+.ecom .d-stage .d-badge{margin-top:6px;font-style:normal}
 .ecom .d-panel{margin-top:22px;padding:28px}
 .ecom .d-panel h3{font-size:20px}
 .ecom .d-panel > p{margin-top:6px;font-size:15px}
@@ -157,6 +141,14 @@
 .ecom .dcard .d-terms span{margin:0}
 
 /* Footer */
-.ecom .d-socials{display:flex;gap:14px;margin-top:14px}
+.ecom .r-body .d-badge{margin-top:4px}
+.ecom .d-socials{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
 .ecom .d-socials a{color:#fff;text-decoration:none;font-weight:600}
 .ecom .d-socials a:hover{text-decoration:underline}
+
+/* Header: keep five links on one line on small laptops */
+.ecom .nav-links a,.ecom .nav .btn,.ecom .hm-dd-lbl{white-space:nowrap}
+@media (min-width:921px) and (max-width:1120px){.ecom .nav-links{gap:16px}
+.ecom .nav-links a,.ecom .hm-dd summary{font-size:14px}
+.ecom .nav .btn.blue{padding-inline:14px;font-size:14px}
+}

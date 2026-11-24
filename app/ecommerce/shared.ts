@@ -1,4 +1,6 @@
 // Markup pieces shared by the landing pages (home, /ecommerce, /lead-gen). Styles: ecommerce.css + d2c.css.
+import { THEME_TOGGLE } from "./theme";
+
 export const BOOK = "https://booknow.acquirely.in/#/FRCNA";
 export const IMG = "/ecommerce/img";
 export const ext = `target="_blank" rel="noopener"`;
@@ -36,24 +38,37 @@ export const P = {
 const navItem = (href: string, o: boolean, ic: string, title: string, sub: string) =>
   `<a href="${href}"><span class="ic${o ? " o" : ""}">${icon(ic, o ? "#F37513" : "#2B7FFF")}</span><span><b>${title}</b><small>${sub}</small></span></a>`;
 
-// Sticky pill nav. `links` are in-page anchors; every page also gets the Services dropdown.
-export const nav = (links: [string, string][], cta = "Book a Call") => `
+const CHEVRON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
+const BURGER = `<span class="hm-burger" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path class="b1" d="M4 7h16"/><path class="b2" d="M4 12h16"/><path class="b3" d="M4 17h16"/></svg></span>`;
+
+// Sticky pill nav, laid out like acquirely.in: first link, Services dropdown, remaining links, theme toggle, CTA.
+// On mobile the Services toggle becomes a hamburger holding every link.
+// toggle: pass false on light-only pages (those not built on .ecom).
+export const nav = (links: [string, string][], cta = "Book a Call", toggle = true) => {
+  const [first, ...rest] = links.map(([href, label]) => `<a href="${href}">${label}</a>`);
+  return `
 <div class="nav">
   <div class="nav-in">
     <a class="logo" href="/" aria-label="Acquirely home"><img src="${IMG}/01-acquirely-the-science-behind-scale.png" alt="Acquirely — The Science Behind Scale"></a>
     <nav class="nav-links" aria-label="Site">
+      ${first}
       <details class="hm-dd">
-        <summary>Services <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <summary aria-label="Services"><span class="hm-dd-lbl">Services ${CHEVRON}</span>${BURGER}</summary>
         <div class="hm-dd-menu">
+          <p class="hm-dd-h">Services</p>
           ${navItem("/ecommerce", false, '<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>', "Ecommerce", "Meta Ads for D2C brands")}
           ${navItem("/lead-gen", true, '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 11h5"/><path d="M18.5 8.5v5"/>', "Lead Gen", "Qualified leads, not form fills")}
+          <div class="hm-dd-mob">
+            ${[first, ...rest].join("\n            ")}
+          </div>
         </div>
       </details>
-      ${links.map(([href, label]) => `<a href="${href}">${label}</a>`).join("\n      ")}
+      ${rest.join("\n      ")}
     </nav>
-    <a class="btn blue" href="${BOOK}" ${ext}>${cta}</a>
+    <div class="nav-act">${toggle ? THEME_TOGGLE : ""}<a class="btn blue" href="${BOOK}" ${ext}>${cta}</a></div>
   </div>
 </div>`;
+};
 
 // Hero "before → after" board.
 export type HubRow = [label: string, before: string, after: string, change: string];
@@ -100,16 +115,12 @@ export const a3Section = (id = "flywheel", band = "band white") => `
       <h2>The A3 system that <span class="grad">compounds.</span></h2>
       <p>Test everything → keep what wins → scale relentlessly. Three phases, one flywheel.</p>
     </div>
-    <div class="d-phases">${phases.map(([n, ic, title, desc, badge], i) => `
-      <button type="button" class="card d-phase" data-filter="${n}" aria-pressed="${n === "2"}">
-        <span class="d-phase-n" aria-hidden="true">${n}</span>
-        <span class="ic${i === 1 ? " o" : ""}">${icon(ic, i === 1 ? "#F37513" : "#2B7FFF", 20)}</span>
-        <small>Phase ${n}</small>
-        <h3>${title}</h3>
-        <p>${desc}</p>
-        <span class="d-badge">${badge}</span>
-      </button>${i < 2 ? `<span class="d-phase-arrow" aria-hidden="true">${ARROW}</span>` : ""}`).join("")}
-    </div>
+    <div class="card fly fly-img"><div class="stages">${phases.map(([n, , title, desc, badge]) => `
+      <button type="button" class="stage d-stage" data-filter="${n}" aria-pressed="${n === "2"}">
+        <span class="code" aria-hidden="true">${n}</span>
+        <span class="d-stage-b"><small>Phase ${n}</small><b>${title}</b><span>${desc}</span><em class="d-badge">${badge}</em></span>
+      </button>`).join("")}
+    </div></div>
     <p class="proof-hint" style="margin-top:14px">Tap a phase to see its campaign structure</p>${phaseDetails.map(([title, sub, cards], i) => `
     <div class="card d-panel" data-cat="${i + 1}"${i === 1 ? "" : " hidden"}>
       <h3>${title}</h3>
@@ -174,9 +185,9 @@ export const footer = (onPage: [string, string][]) => `
   <div class="wrap">
     <div class="foot">
       <div>
-        <div class="brand"><img src="${IMG}/28-acquirely-the-science-behind-scale.png" alt="Acquirely — The Science Behind Scale" style="height:52px;width:auto"></div>
+        <div class="brand"><img src="${IMG}/28-acquirely-the-science-behind-scale.png" alt="Acquirely — The Science Behind Scale" loading="lazy" style="height:52px;width:auto"></div>
         <p style="margin-top:10px;max-width:32ch">Building growth systems that compound. Performance marketing for modern brands.</p>
-        <p class="d-socials"><a href="https://www.instagram.com/acquirely.in" ${ext}>Instagram</a><a href="https://www.linkedin.com/company/acquirelydm/" ${ext}>LinkedIn</a><a href="https://www.facebook.com/profile.php?id=61578312825291#" ${ext}>Facebook</a></p>
+        <p class="d-socials"><a href="https://www.instagram.com/acquirely.in" ${ext}>Instagram</a><a href="https://www.linkedin.com/company/acquirelydm/" ${ext}>LinkedIn</a><a href="https://www.facebook.com/profile.php?id=61578312825291#" ${ext}>Facebook</a><a href="https://www.youtube.com/@acquirelymedia" ${ext}>YouTube</a></p>
       </div>
       <div><p class="fh">Quick Links</p><ul>${onPage.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}<li><a href="/ecommerce">Ecommerce</a></li><li><a href="/lead-gen">Lead Generation</a></li><li><a href="/aboutus">About us</a></li></ul></div>
       <div><p class="fh">Legal</p><ul><li><a href="/term-and-services">Terms &amp; Conditions</a></li><li><a href="/privacy-policy">Privacy Policy</a></li></ul></div>

@@ -1,16 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import { Montserrat, Open_Sans } from "next/font/google";
+import { ecomBody, ecomDisplay } from "@/lib/fonts";
 import useLandingScripts from "./useLandingScripts";
 import "./ecommerce.css";
 import "./home.css";
 import "./d2c.css";
+import "./ecommerce-dark.css";
 
-const montserrat = Montserrat({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-ecom-display" });
-const openSans = Open_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-ecom-body" });
-
-// Renders a markup-driven landing page (home, /ecommerce, /lead-gen) in the acquirely.in design.
+// Renders a markup-driven landing page (/ecommerce, /lead-gen) in the acquirely.in design.
 export default function Landing({ markup }: { markup: string }) {
   const rootRef = useRef<HTMLDivElement>(null);
   useLandingScripts(rootRef);
@@ -18,7 +16,7 @@ export default function Landing({ markup }: { markup: string }) {
   return (
     <div
       ref={rootRef}
-      className={`ecom hm ${montserrat.variable} ${openSans.variable}`}
+      className={`ecom hm ${ecomDisplay.variable} ${ecomBody.variable}`}
       dangerouslySetInnerHTML={{ __html: markup }}
     />
   );

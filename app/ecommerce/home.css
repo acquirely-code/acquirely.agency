@@ -1,4 +1,4 @@
-/* Nav dropdown and helpers shared by the landing pages (home, /ecommerce, /lead-gen). Every rule is under .hm so nothing leaks into other routes. */
+/* Homepage-only additions on top of ecommerce.css. Every rule is under .hm so nothing leaks into other routes. */
 
 /* Case-study filter tabs */
 .hm .hm-tabs{display:flex;justify-content:center;gap:6px;width:max-content;max-width:100%;margin:-20px auto 32px;background:#fff;border:1px solid var(--line);border-radius:9999px;padding:5px;box-shadow:var(--shadow)}
@@ -23,11 +23,31 @@
 .hm .hm-dd-menu b{display:block;font-weight:700;font-size:14.5px}
 .hm .hm-dd-menu small{display:block;font-family:var(--body);font-size:13px;color:var(--muted)}
 .hm .hm-dd-all{display:block;margin-top:4px;padding:10px;border-top:1px solid var(--line);font-size:13.5px;font-weight:700;color:var(--indigo-2)}
-@media (max-width:920px){.hm .nav-links{display:flex}
+.hm .hm-dd-lbl{display:inline-flex;align-items:center;gap:5px}
+.hm .hm-burger,.hm .hm-dd-h,.hm .hm-dd-mob{display:none}
+/* Mobile: the Services toggle becomes a hamburger holding every nav link. */
+@media (max-width:920px){.hm .nav-links{display:flex;order:3}
 .hm .nav-links > a{display:none}
-.hm .nav-in{gap:12px;position:relative}
-.hm .hm-dd,.hm .hm-dd[open]{position:static;margin-left:auto}
-.hm .hm-dd-menu{top:calc(100% + 8px);left:0;right:0;width:auto;transform:none}
+.hm .nav-in{gap:10px;position:relative;padding:8px 8px 8px 14px}
+.hm .nav-in .logo{margin-right:auto}
+.hm .nav-in .logo img{height:34px}
+.hm .nav .btn.blue{display:none}
+.hm .hm-dd,.hm .hm-dd[open]{position:static}
+.hm .hm-dd-lbl{display:none}
+.hm .hm-burger{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.hm .hm-burger path{transition:transform .2s,opacity .2s;transform-box:fill-box;transform-origin:center}
+.hm .hm-dd[open] .hm-burger .b1{transform:translateY(5px) rotate(45deg)}
+.hm .hm-dd[open] .hm-burger .b2{opacity:0}
+.hm .hm-dd[open] .hm-burger .b3{transform:translateY(-5px) rotate(-45deg)}
+.hm .hm-dd[open] summary svg{transform:none}
+.hm .hm-dd-menu{top:calc(100% + 8px);left:0;right:0;width:auto;transform:none;max-height:calc(100dvh - 110px);overflow-y:auto}
+.hm .hm-dd-h{display:block;margin:4px 10px 2px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hm .hm-dd-mob{display:grid;gap:2px;margin-top:4px;padding-top:6px;border-top:1px solid var(--line)}
+.hm .hm-dd-mob a{display:block;padding:12px 10px;border-radius:10px;font-weight:700;font-size:15px;color:var(--ink)}
+.hm .hm-dd-mob a:active,.hm .hm-dd-mob a:hover{background:#F5F7FF}
+.hm .hm-tools-dd{display:none}
+}
+@media (max-width:380px){.hm .nav-in .logo img{height:28px}
 }
 
 /* Why brands stall */
@@ -58,6 +78,18 @@
 .hm .hm-svc ul{list-style:none;margin:6px 0 0;padding:0;display:grid}
 .hm .hm-svc li{padding:10px 0 10px 28px;border-top:1px solid var(--line);font-size:15px;font-weight:600;color:var(--ink);position:relative}
 .hm .hm-svc li::before{content:"";position:absolute;left:0;top:12px;width:18px;height:18px;border-radius:50%;background:#EEF2FF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center/11px no-repeat}
+
+/* Free calculator tools */
+.hm .hm-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:20px}
+.hm .hm-tool{display:grid;gap:12px;align-content:start;padding:28px;color:var(--ink);text-decoration:none}
+.hm .hm-tool .ic{width:42px;height:42px;border-radius:10px;background:var(--blue-soft);display:grid;place-items:center}
+.hm .hm-tool .ic.o{background:var(--orange-soft)}
+.hm .hm-tool h3{font-size:20px}
+.hm .hm-tool p{font-size:15px;color:var(--muted)}
+.hm .hm-tool-link{display:inline-flex;align-items:center;gap:8px;margin-top:4px;font-weight:700;color:var(--indigo-2)}
+.hm .hm-tool-link svg{width:16px;height:16px}
+.hm .hm-tool:hover .hm-tool-link{text-decoration:underline}
+@media (max-width:700px){.hm .hm-tools{grid-template-columns:1fr}}
 
 /* Industries */
 .hm .hm-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 24px;margin-top:18px;font-size:14px;color:var(--muted)}

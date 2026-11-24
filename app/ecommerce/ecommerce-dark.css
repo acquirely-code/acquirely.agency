@@ -1,0 +1,78 @@
+/* Dark theme for the .ecom pages (landing pages, homepage, thank-you pages). Active when <html data-theme="dark">,
+   which app/ecommerce/theme.ts sets from the saved choice or the system setting. Load after the page's own CSS. */
+[data-theme=dark] .ecom{
+  --bg:#0D121D; --card:#151B28; --soft:#1C2331; --blue-soft:#132038; --orange-soft:#2A1A0F;
+  --ink:#F1F5F9; --ink-2:#F8FAFC; --text:#A6B0C3; --muted:#8B93A7; --line:#262E3E;
+  --blue:#4F8EF7; --blue-2:#2F6FF0; --indigo-2:#A5B4FC;
+  --dark:#070A12; --dark-card:#121826; --dark-line:#232B3B;
+  --good:#4ADE80;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+html[data-theme=dark]:has(.ecom),html[data-theme=dark]:has(.ecom) body{background:#0D121D}
+
+/* Logos: the navy wordmark turns white */
+[data-theme=dark] .ecom .nav-in .logo img,[data-theme=dark] .ecom .ty-top img{filter:brightness(0) invert(1)}
+
+/* Surfaces that were plain white */
+[data-theme=dark] .ecom .white,[data-theme=dark] .ecom .strip,[data-theme=dark] .ecom .strip .lbl,[data-theme=dark] .ecom .trusted{background:#111725}
+[data-theme=dark] .ecom .btn.line,[data-theme=dark] .ecom .audience,[data-theme=dark] .ecom .float,[data-theme=dark] .ecom .stage,
+[data-theme=dark] .ecom details,[data-theme=dark] .ecom .wall .slot,[data-theme=dark] .ecom .ph-frame,[data-theme=dark] .ecom .proof-shot,
+[data-theme=dark] .ecom .win,[data-theme=dark] .ecom .tst figure{background:var(--card)}
+[data-theme=dark] .ecom .ph-frame{border-color:var(--line)}
+[data-theme=dark] .ecom .proof-shot{border-color:var(--line)}
+[data-theme=dark] .ecom .nav-in{background:rgba(21,27,40,.8);border-color:var(--line);box-shadow:0 10px 30px -12px rgba(0,0,0,.5)}
+[data-theme=dark] .ecom .faces img,[data-theme=dark] .ecom .faces span,[data-theme=dark] .ecom .bl{border-color:var(--bg)}
+[data-theme=dark] .ecom .dcard{background:var(--dark-card);border:1px solid var(--dark-line)}
+
+/* Tinted chips and pills */
+[data-theme=dark] .ecom .pill-live,[data-theme=dark] .ecom .hub-row .t,[data-theme=dark] .ecom .ph-res{background:rgba(74,222,128,.12)}
+[data-theme=dark] .ecom .chip{background:rgba(129,140,248,.16)}
+[data-theme=dark] .ecom .ba.before{background:var(--soft)}
+
+/* Bars and tracks */
+[data-theme=dark] .ecom .track{background:var(--soft);border-color:var(--line)}
+[data-theme=dark] .ecom .fill.b{background:#2A3344}
+
+/* Icon bullets: keep the icon, darken the disc */
+[data-theme=dark] .ecom .x-list li::before,[data-theme=dark] .ecom .fit .no li::before{background-color:rgba(239,68,68,.15)}
+[data-theme=dark] .ecom .fit .yes li::before{background-color:rgba(74,222,128,.14)}
+[data-theme=dark] .ecom .tier li::before{background-color:rgba(129,140,248,.18)}
+
+/* Borders that were pale indigo/blue */
+[data-theme=dark] .ecom .stage:hover,[data-theme=dark] .ecom details[open]{border-color:#3A4570}
+[data-theme=dark] .ecom .tier{border-color:#34406A}
+[data-theme=dark] .ecom .wall .slot{border-color:#3A4570}
+
+/* Andromeda callout */
+[data-theme=dark] .ecom .andro{border-color:rgba(249,115,22,.3)}
+[data-theme=dark] .ecom .andro p{color:#FDBA74}
+
+[data-theme=dark] .ecom .person a{color:#60A5FA}
+[data-theme=dark] .ecom .ph-bar span{background:#3A4356}
+[data-theme=dark] .ecom .ph figcaption b{color:var(--ink)}
+[data-theme=dark] .ecom .vid-card{background:rgba(21,27,40,.94);border-color:var(--line)}
+[data-theme=dark] .ecom .vid-screen{background:var(--soft)}
+
+/* Flywheel diagram (inline SVG attributes) */
+[data-theme=dark] .ecom .fly svg circle[fill="#F7F9FC"]{fill:var(--soft);stroke:var(--line)}
+[data-theme=dark] .ecom .fly svg text[fill="#0F172A"]{fill:var(--ink)}
+[data-theme=dark] .ecom .fly svg text[fill="#71717B"]{fill:var(--muted)}
+
+/* ---------- Homepage (.hm) ---------- */
+[data-theme=dark] .hm .hm-tabs,[data-theme=dark] .hm .hm-dd-menu,[data-theme=dark] .hm .hm-burger{background:var(--card)}
+[data-theme=dark] .hm .hm-dd-menu > a:not(.hm-dd-all):hover,[data-theme=dark] .hm .hm-dd-mob a:hover,[data-theme=dark] .hm .hm-dd-mob a:active{background:var(--soft)}
+[data-theme=dark] .hm .hm-vendors div,[data-theme=dark] .hm .chip.soon{border-color:#3A4570}
+[data-theme=dark] .hm .hm-stages div{background:var(--card);border-color:rgba(249,115,22,.3);color:#FDBA74}
+[data-theme=dark] .hm .andro p b{color:#FDBA74}
+[data-theme=dark] .hm .hm-svc li::before{background-color:rgba(129,140,248,.18)}
+
+/* ---------- This site's components (d2c.css) ---------- */
+[data-theme=dark] .ecom .d-tabs,[data-theme=dark] .ecom .d-more > summary > span{background:var(--card)}
+[data-theme=dark] .ecom .d-badge,[data-theme=dark] .ecom .hub-note{background:rgba(129,140,248,.16);border-color:#34406A}
+[data-theme=dark] .ecom .hub-note .ic{background:var(--soft)}
+[data-theme=dark] .ecom .d-badge.o,[data-theme=dark] .ecom .d-stage .d-badge{color:#FDBA74;background:rgba(249,115,22,.14)}
+[data-theme=dark] .ecom .hm-svc .d-no{color:rgba(255,255,255,.06)}
+[data-theme=dark] .ecom .d-checks li::before{background-color:rgba(129,140,248,.18)}
+[data-theme=dark] .ecom .d-yes li::before{background-color:rgba(74,222,128,.14)}
+[data-theme=dark] .ecom .d-more,[data-theme=dark] .ecom .d-more[open],[data-theme=dark] .ecom .hm-dd,[data-theme=dark] .ecom .hm-dd[open]{background:none}

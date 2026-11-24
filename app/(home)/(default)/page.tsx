@@ -1,6 +1,5 @@
-import Landing from "@/app/ecommerce/Landing";
-import markup from "./markup";
+import HomeLanding from "./HomeLanding";
 
 export default function HomePage() {
-  return <Landing markup={markup} />;
+  return <HomeLanding />;
 }

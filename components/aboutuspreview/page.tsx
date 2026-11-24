@@ -125,7 +125,7 @@ const differentiators = [
 
 export default function   AboutPage() {
   return (
-    <main className="overflow-hidden bg-white text-[#111827]">
+    <main className="overflow-clip bg-white text-[#111827]">
       <div className="fixed right-0 top-1/2 z-[9999] flex -translate-y-1/2 flex-col gap-[2px]">
               {/* Facebook */}
               <Link 
@@ -166,15 +166,15 @@ export default function   AboutPage() {
                 <span className="max-md:hidden">YouTube</span>
               </Link>
             </div>
+      <Navbar />
       {/* HERO SECTION (Merged Dark Theme with HTML Messaging) */}
-   <section className="relative overflow-hidden bg-white pb-16 pt-8 md:pb-[160px] md:pt-[46px]">
+   <section className="relative overflow-hidden bg-white pb-16 pt-[94px] md:pb-[160px] md:pt-[110px]">
         {/* Background Blur Effects (Lowered opacity for light mode) */}
         <div className="absolute right-[-5%] top-[-10%] z-0 h-[600px] w-[600px] rounded-full bg-blue-600/5 blur-[60px]"></div>
         <div className="absolute bottom-[-10%] left-[-5%] z-0 h-[600px] w-[600px] rounded-full bg-purple-500/5 blur-[50px]"></div>
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-20">
           
-          <Navbar />
           <div className="mx-auto mt-16 max-w-[1000px] text-center sm:mt-24">
             <div className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-[#EEEDFE] px-4 py-2 text-xs font-bold text-[#534AB7]">
               <Store className="h-4 w-4" />

@@ -1,177 +1,531 @@
 import { withImgDims } from "@/lib/img-dims";
-import type { HubRow } from "@/app/ecommerce/shared";
-import { BOOK, IMG, ext, ARROW, P, icon, nav, hub, a3Section, inHouse, footer, mcta } from "@/app/ecommerce/shared";
-// Page markup for the homepage, rendered by Landing (app/ecommerce/Landing.tsx).
+import { BOOK, MAIN, siteNav, siteFooter } from "@/components/site-chrome/markup";
+// Page markup for the homepage, rendered by HomeLanding: a copy of the acquirely.in homepage.
+// Booking CTAs go to this site's booking page.
+const CTA = `href="${BOOK}" target="_blank" rel="noopener nofollow"`;
+const PLAYBOOK = "https://forms.zoho.in/acquirely/form/A3Playbook";
+const IMG = "/ecommerce/img";
+const ARROW = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
+const TICK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+const LINKEDIN = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 11.02 5 2.5 2.5 0 01-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.2 21 14.5V21h-4v-5.8c0-1.4 0-3.2-1.95-3.2S12.8 13.5 12.8 15.1V21H9z"/></svg>`;
+const ext = `target="_blank" rel="noopener"`;
+const icon = (path: string, stroke = "#2B7FFF") =>
+  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
 
-const socials: [string, string, string, string][] = [
-  ["https://www.facebook.com/profile.php?id=61578312825291#", "#1877F2", "Facebook", '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>'],
-  ["https://www.instagram.com/acquirely.in", "#E4405F", "Instagram", '<rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/>'],
-  ["https://www.linkedin.com/company/acquirelydm/", "#0A66C2", "LinkedIn", '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>'],
-  ["https://www.youtube.com/@acquirelymedia", "#FF0000", "YouTube", '<path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><path d="M9.75 15.02l5.75-3.27-5.75-3.27z"/>'],
+const phone = (domain: string, img: string, name: string, cat: string) =>
+  `<figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>${domain}</b><span></span></div><div class="ph-screen"><img src="${IMG}/${img}" alt="${name} website on mobile" loading="lazy"></div></div><figcaption><b>${name}</b><span class="ph-cat">${cat}</span></figcaption></figure>`;
+
+type Case = {
+  e: "d2c" | "lead"; chip: string; title: string; result: string; resultLabel: string;
+  bar: [string, string, string, number]; // label, before, after, before width % (after is 100%, or reversed when lower is better)
+  lowerIsBetter?: boolean; facts: [string, string, string]; story: string; shot?: [string, string, string];
+};
+
+const cases: Case[] = [
+  { e: "d2c", chip: "Toys &amp; puzzles · D2C", title: "From $8.6K to $43K per month in 90 days", result: "5x", resultLabel: "Monthly revenue in 90 days", bar: ["Monthly revenue", "$8.6K", "$43K", 20], facts: ["TacTow, 3D wooden puzzles made in Bengaluru", "$8.6K/month, built by the founder on his own", "<b>$43K/month. 5x revenue in one quarter.</b>"], story: "We consolidated the ad accounts around the hero product and ran the A3 Flywheel, turning one winning creator ad into a weekly stream of iterations. Levers: Meta structure, creative engine, creator ads.", shot: ["15-tactow-shopify-dashboard-26-1-lakh-total.jpg", "TacTow Shopify dashboard: about $28K total sales, Sep 13 to Oct 13 2026, up 53%", "<b>Shopify</b> Total sales, last 30 days, vs previous period"] },
+  { e: "d2c", chip: "Safety equipment · Ecommerce, USA", title: "From $1K to $7K a month in 90 days", result: "7x", resultLabel: "Monthly online revenue in 90 days", bar: ["Monthly online revenue", "$1K", "$7K", 14], facts: ["ADA Supplies, US safety equipment supplier to Boeing, Northrop Grumman and government buyers", "$1K/month online, despite a strong offline business", "<b>$7K/month online. 7x in 90 days.</b>"], story: "In June 2026 we built one combined Meta and Google Ads system: Google to capture buyers already searching for safety gear, Meta to reach new ones. Levers: Google search intent, Meta prospecting, one system across both.", shot: ["35-ada-supplies-revenue-dashboard-90-days.jpg", "ADA Supplies revenue dashboard, last 90 days: $12,441 gross revenue, up 183%; $12,088 net after refunds and card fees", "<b>Store dashboard</b> Gross revenue, last 90 days, up 183%"] },
+  { e: "lead", chip: "Pilot training · Lead gen", title: "Qualified leads from 10% to 50%", result: "5x", resultLabel: "More sales-ready conversations, same enquiry flow", bar: ["Qualified lead rate", "10%", "50%", 20], facts: ["RSA Pilot Training Academy, Mumbai", "1 in 10 enquiries was sales-ready", "<b>1 in 2 enquiries now qualified, since Aug 2025.</b>"], story: "We moved lead capture from WhatsApp to a website form. The extra step filtered casual enquiries, so Meta learned to find serious aspiring pilots for a $38K–$65K programme. Levers: lead capture fix, A3 Flywheel, intent filtering." },
+  { e: "d2c", chip: "Furniture · D2C", title: "ROAS from 2.7 to 4.2 while revenue nearly tripled", result: "2.7 → 4.2", resultLabel: "ROAS in 5 months", bar: ["Monthly revenue", "$21.5K", "$61K", 35], facts: ["Gharaana, furniture ecommerce", "2.7 ROAS, $21.5K/month", "<b>4.2 ROAS, $61K/month.</b>"], story: "The founder was sure open targeting would fail after Andromeda. Broad audiences in one Prospecting CBO, fed a fresh creative Pack every week, proved otherwise. Levers: broad targeting, weekly creative Packs.", shot: ["17-gharaana-meta-ads-manager-before-and-aft.jpg", "Gharaana Meta Ads Manager before and after: account average purchase ROAS 2.30 in August 2026, 4.04 in the last 30 days, all 39 campaigns", "<b>Meta Ads Manager</b> Purchase ROAS 2.30 → 4.04"] },
+  { e: "lead", chip: "Online school, 190+ countries · Lead gen", title: "Spend up 80% at the same cost per lead", result: "$50K → $90K", resultLabel: "Monthly ad spend in 2 months", bar: ["Monthly ad spend", "$50K", "$90K", 56], facts: ["International Schooling, accredited American online school", "60%+ of budget recycling existing audiences", "<b>$90K/month, cost per lead held steady.</b>"], story: "The wrong creatives were being scaled and most of the budget kept reaching people who already knew the brand. We moved spend to broad prospecting with existing audiences excluded, and backed creatives proven incremental. Levers: audience exclusions, incremental attribution, A3 Flywheel." },
+  { e: "d2c", chip: "Fashion · D2C", title: "From $3,760 to $10,750 a month in 2 months", result: "2.9x", resultLabel: "Monthly revenue in 2 months", bar: ["Monthly revenue", "$3,760", "$10,750", 35], facts: ["Patoola, Indo-Western fashion, Bengaluru", "Every ad creator-led, capping scale", "<b>$10,750/month, ROAS up from 3.6 to 4.2.</b>"], story: "We added founder-led ads telling the story behind the label, tested in weekly Packs alongside creator content. Levers: founder-led creative, weekly Packs.", shot: ["19-patoola-meta-ads-manager-before-and-afte.jpg", "Patoola Meta Ads Manager before and after: account average purchase ROAS 3.6 in August 2026, 4.02 in the last 30 days, all campaigns", "<b>Meta Ads Manager</b> Purchase ROAS 3.6 → 4.02"] },
+  { e: "lead", chip: "Fintech · Lead gen", title: "Cost per lead from $10.75 to $0.14", result: "−98.7%", resultLabel: "Cost per lead, with spend up 20x", bar: ["Cost per lead", "$10.75", "$0.14", 100], lowerIsBetter: true, facts: ["Kashti, loan marketplace, Bengaluru", "Convinced Meta didn't work", "<b>$0.14 per lead at $32K/month spend.</b>"], story: "Structured creative testing surfaced one winning angle that cut cost per lead 98% and made 20x spend safe. Levers: structured creative testing, one winning angle. Running since March 2026." },
+  { e: "d2c", chip: "Kids DIY kits · D2C", title: "ROAS from 2.5 to 3.5 after two flat years", result: "2.5 → 3.5", resultLabel: "ROAS in 2 months", bar: ["ROAS", "2.5", "3.5", 71], facts: ["Creste Kids, DIY craft kits", "Two years of tweaking settings", "<b>3.5 ROAS in two months.</b>"], story: "We diagnosed creative as the bottleneck, built a creator pipeline, and split past buyers into a Retention campaign. Levers: creator pipeline, Prospecting + Retention.", shot: ["20-creste-meta-ads-manager-before-and-after.jpg", "Creste Meta Ads Manager before and after: all-time account average purchase ROAS 2.07 across 96 campaigns, 3.65 in the last 30 days", "<b>Meta Ads Manager</b> Purchase ROAS 2.07 → 3.65"] },
 ];
 
-const studies: [string, string, string][] = [
-  ["retroverse.png", "Retroverse", "ROAS 2.43 to 4.68"],
-  ["modish.png", "Modish", "ROAS 2.31 to 3.53"],
-  ["nostrain.png", "No Strain", "ROAS 1.36 to 2.65"],
+const caseCard = (c: Case, i: number) => {
+  const [label, before, after, w] = c.bar;
+  const [bw, aw] = c.lowerIsBetter ? [100, 4] : [w, 100];
+  return `
+      <article class="card case reveal" data-cat="${c.e}">
+        <div class="case-data">
+          <div class="k"><small>Result</small><b class="grad">${c.result}</b><span>${c.resultLabel}</span></div>
+          <div class="bars"><div class="bar-g"><div class="bar-t">${label}<em>${c.lowerIsBetter ? "lower is better" : "before → after"}</em></div>
+            <div class="bar"><span>Before</span><div class="track"><div class="fill b" style="width:${bw}%">${before}</div></div></div>
+            <div class="bar"><span>After</span><div class="track"><div class="fill a" style="width:${aw}%">${after}</div></div></div>
+          </div></div>
+          ${c.shot ? `<div class="proofs"><figure class="proof-shot"><img src="${IMG}/${c.shot[0]}" alt="${c.shot[1]}" loading="lazy"><figcaption>${c.shot[2]}</figcaption></figure><p class="proof-hint">Tap the screenshot to enlarge</p></div>` : ""}
+        </div>
+        <div class="case-body">
+          <div class="case-top"><span class="num${c.e === "lead" ? " o" : ""}">${String(i + 1).padStart(2, "0")}</span><span class="chip">${c.chip}</span></div>
+          <h3>${c.title}</h3>
+          <dl class="facts">
+            <div><dt>Client</dt><dd>${c.facts[0]}</dd></div>
+            <div><dt>Starting point</dt><dd>${c.facts[1]}</dd></div>
+            <div><dt>Result</dt><dd>${c.facts[2]}</dd></div>
+          </dl>
+          <p class="story">${c.story}</p>
+          <a class="btn line" ${CTA}>Get the same diagnosis →</a>
+        </div>
+      </article>`;
+};
+
+const reason = (n: string, o: boolean, title: string, cards: [string, string, string][], quote: string) => `
+      <div class="reveal">
+        <div class="r-head"><span class="num${o ? " o" : ""}">${n}</span><h3>${title}</h3></div>
+        <div class="r-body">${cards.map(([ic, h, p]) => `<div class="card"><span class="ic${o ? " o" : ""}">${icon(ic, o ? "#F37513" : "#2B7FFF")}</span><h4>${h}</h4><p>${p}</p></div>`).join("")}</div>
+        <blockquote class="hm-quote"><img src="${IMG}/mausam-arora-portrait.jpg" alt="Mausam Arora, co-founder of Acquirely" loading="lazy"><div><p>"${quote}"</p><cite>Mausam Arora, Co-founder</cite></div></blockquote>
+      </div>`;
+
+const chips = (proven: string[], soon: string[] = []) =>
+  `<div class="hm-chips">${proven.map((c) => `<span class="chip">${c}</span>`).join("")}${soon.map((c) => `<span class="chip soon">${c}</span>`).join("")}</div>`;
+
+const svcCard = (path: string, o: boolean, title: string, intro: string, items: string[]) => `
+      <div class="card hm-svc reveal">
+        <span class="ic${o ? " o" : ""}">${icon(path, o ? "#F37513" : "#2B7FFF")}</span>
+        <h3>${title}</h3>
+        <p>${intro}</p>
+        <ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>
+      </div>`;
+
+const wins: [string, string, string, string][] = [
+  ["22-meta-ads-app-kenzai-puzzles-prospecting.jpg", "Meta Ads app: Kenzai Puzzles prospecting campaign with 954 website purchases", "TacTow · formerly Kenzai Puzzles", "954 purchases from one prospecting campaign."],
+  ["23-whatsapp-creste-team-says-dussehra-kits.jpg", "WhatsApp: Creste team says Dussehra kits almost sold out, asks to pause ads", "Creste Kids", "Sold out before Dussehra. The client asked us to pause."],
+  ["34-whatsapp-payal-patoola-testimonial.jpg", "WhatsApp from Payal at Patoola: fewer cancellations, more prepaid orders, higher AOV and stable ROAS after a month with Acquirely", "Payal · Patoola", "\"Really encouraging results in just one month.\""],
+  ["24-meta-ads-app-patoola-prospecting-campaig.jpg", "Meta Ads app: Patoola prospecting campaign with 48 website purchases", "Patoola", "48 purchases from a single prospecting campaign."],
+  ["26-whatsapp-testimonial-from-karthik-recomm.jpg", "WhatsApp testimonial from Karthik recommending Kunal and the Acquirely team", "Karthik · founder, Old School Station", "\"Consistent results at scale. Highly recommend.\""],
+  ["18-gharaana-shopify-10-6-lakh-total-sales-i.jpg", "Gharaana Shopify: about $11.4K total sales in the last 7 days, up 28%; sessions up 52%; orders up 30%", "Gharaana · Shopify", "$11.4K in a week, up 28%."],
+  ["25-meta-ads-app-tactow-ad-sets-broad-pack-2.jpg", "Meta Ads app: TacTow ad sets — Broad Pack 2 with 105 purchases, Winner Creatives with 35", "TacTow · ad sets", "Every weekly creative Pack tracked to purchases, not clicks."],
+  ["16-tactow-meta-ads-manager-768-website-purc.jpg", "TacTow Meta Ads Manager: 768 website purchases, about $24.4K purchase value, 3.83 ROAS, last 30 days", "TacTow · Ads Manager", "768 purchases at 3.83 ROAS in 30 days."],
+  ["27-meta-ads-app-gharaana-prospecting-and-re.jpg", "Meta Ads app: Gharaana prospecting and retargeting campaigns, both active", "Gharaana", "High-ticket furniture, sold through prospecting and retargeting."],
 ];
 
-// [icon, category, number, title, description, badge]
-const services: [string, string, string, string, string, string][] = [
-  [P.dashboard, "paid", "01", "Meta Ads Management", "We run structured A/B tests across audiences, creatives, and offers — letting data pick your winners, not gut feel.", "↗ Avg. ROAS lift: 1.8-2.4x in 60 days"],
-  [P.search, "paid", "02", "Google Ads Management", "Search, Shopping, and Performance Max — tuned for purchase intent, not just clicks. Every Dollar tracked to revenue.", "↗ Lower CPAs with intent-first targeting"],
-  [P.zap, "scale", "03", "Ad Creative Strategy &amp; Testing", "15+ creatives tested monthly. UGC, static, motion — we find the one that scales and build more of it.", "↗ Proven creative reduces CPM by 30-40%"],
-  [P.filter, "funnel", "04", "Funnel Optimisation", "Landing page, checkout, post-purchase — we audit and fix every drop-off point so your ad spend isn't leaking.", "↗ Avg. 20-35% CVR improvement"],
-  [P.activity, "funnel", "05", "Conversion Improvements", "CRO, offer framing, social proof placement — the small shifts that turn a 2% converter into a 4% converter.", "↗ More revenue, same ad budget"],
-  [P.trend, "scale", "06", "Scaling Frameworks", "Our A3 model: test winners feed scale campaigns. No random budget hikes — a structured path from $10K to $100K/Month.", "↗ Modish: ROAS 2.31 → 3.53 in 90 days"],
-];
-
-// [icon, colour, title, description, badge]
-const results: [string, string, string, string, string][] = [
-  [P.trend, "#6366F1", "Predictable ROAS", "You'll know what you're getting before we scale. No more guessing if this month will be profitable.", "Retroverse: 2.43x → 4.68x"],
-  [P.zap, "#F97316", "Creatives that scale", "A constant pipeline of tested winners — UGC, static, motion — so you never run the same tired ad twice.", "15+ tested per month"],
-  [P.filter, "#10B981", "A funnel that converts", "We audit every drop-off point — landing page, checkout, post-purchase — and fix the leaks before scaling spend.", "Avg. 20-35% CVR lift"],
-  [P.search, "#3B82F6", "Full transparency", "Weekly reports, live dashboards, no black-box reporting. You always know exactly where your money is going.", 'Modish: "transparency is unmatched"'],
-  [P.trend, "#F43F5E", "A path to $100K/Month", "Our A3 model gives you a structured, data-backed road from $10K to $100K monthly — not just ad spend, real revenue.", "Modish: ROAS 2.31x → 3.53x"],
-  [P.refresh, "#14B8A6", "A system that compounds", "Every winner feeds the next test. Every test feeds the next scale. The longer you run it, the better it gets.", "NoStrain: 1.36x → 2.65x"],
-];
-
-// Client websites for the scrolling phone-mockup strip (same as acquirely.in). [image prefix, url bar, name, category]
-const sites: [string, string, string, string][] = [
-  ["09-tactow", "tactow.in", "TacTow", "3D wooden puzzles"],
-  ["33-rsa-aviation", "rightsourceaviation.com", "RSA Aviation", "Pilot training academy"],
-  ["10-gharaana", "gharaana", "Gharaana", "Furniture"],
-  ["30-international-schooling", "internationalschooling.org", "International Schooling", "Online school"],
-  ["11-patoola", "patoola", "Patoola", "Indo-Western fashion"],
-  ["31-kashti", "kashti.com", "Kashti", "Fintech app"],
-  ["12-creste-kids", "crestekids.com", "Creste Kids", "DIY craft kits"],
-  ["29-global-proptech", "globalproptech.in", "Global Proptech", "Luxury real estate · Gurugram"],
-  ["32-nostrain", "nostrain.in", "NoStrain", "Footwear"],
-  ["13-sevora", "sevora", "Sevora", "Fashion"],
-  ["14-sofara", "sofara", "Sofara", "Furniture · Canada"],
+const faqs: [string, string][] = [
+  ["How quickly will I see results?", "First winning creatives usually show up in 3–6 weeks. Structured scaling follows once we have a baseline. TacTow went 5x in one quarter; Creste moved in two months."],
+  ["Do I have to buy every service?", "No. Most clients start with Meta and Google, then add LinkedIn, marketplaces, website, CRO or social once we've found where the funnel leaks. The diagnosis call tells us where to start."],
+  ["Do you work with lead-gen businesses, or just ecommerce?", "Both, and lead gen is half our work. RSA Pilot Training went from 10% to 50% qualified leads, International Schooling scaled from $50K to $90K a month at the same cost per lead, and Kashti cut cost per lead by 98%. For lead gen we measure qualified leads and booked meetings, not form fills."],
+  ["Do you work with brands that are just launching?", "Yes. We handhold new brands from the very beginning: positioning, website, tracking, creative and the first campaigns, built as one funnel from day one. What we need is a clear vision for the brand and a planned budget for the launch."],
+  ["I already have an agency. Do I have to switch everything?", "No. We often start with one channel or one product line, so you can compare results before moving anything else."],
+  ["Are creatives included?", "Yes. A weekly creative Pack and influencer management are included. Product shoots and paid creator fees are billed separately."],
+  ["Do you run campaigns outside India?", "Yes. We manage accounts for brands in Canada, the USA and other markets with the same system."],
+  ["Who owns the ad accounts?", "You do. Always. Your accounts, your pixel, your data, your site."],
 ];
 
 const markup = `
-<!-- ============ SOCIAL RAIL ============ -->
-<div class="d-social" aria-label="Acquirely on social media">${socials.map(([href, bg, label, path]) => `
-  <a href="${href}" ${ext} style="background:${bg}">${icon(path, "#fff", 20)}<span>${label}</span></a>`).join("")}
-</div>
-
 <!-- ============ NAV ============ -->
-${nav([["#services", "What We Do"], ["#flywheel", "A3 System"], ["#results", "Case Studies"], ["/aboutus", "About Us"]], "Book a Meeting")}
+${siteNav(true, true, CTA)}
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <h1><span class="ln">Scale Profitably With A</span> <span class="ln"><span class="grad">Proven Performance Marketing</span> Agency</span></h1>
-      <p class="lede">Grow from $10K to $100K+ monthly with data-driven Meta Ads</p>
+      <span class="audience"><b>For founders</b><span><strong>D2C brands</strong> and <strong>lead-gen businesses</strong> who've hit a growth ceiling</span></span>
+      <h1><span class="ln">Learn why <span class="grad">20+ D2C &amp; lead-gen brands</span> trust</span> <span class="ln">Acquirely to run their whole growth funnel</span></h1>
+      <p class="lede">Our clients have grown revenue <b>up to 5x in 90 days</b>, lifted qualified leads <b>from 10% to 50%</b>, and scaled ad spend <b>80% at the same cost per lead</b>, with one team running their Meta, Google, LinkedIn, marketplaces, website and conversion.</p>
       <div class="hero-cta">
-        <a class="btn" href="${BOOK}" ${ext}>Book a Growth Call Here! ${ARROW}</a>
-        <div class="blogos" aria-label="Founders scaling with Acquirely">${[1, 2, 3, 4, 5].map((n) => `<span class="bl face"><img src="${IMG}/founder${n}.png" alt="User ${n}"></span>`).join("")}</div>
+        <a class="btn" ${CTA}>Book a Growth Diagnosis Call ${ARROW}</a>
+        <div class="blogos" aria-label="Brands growing with Acquirely"><span class="bl" style="background:#F3EEE8" title="TacTow"><img src="${IMG}/02-tactow.png" alt="TacTow"></span><span class="bl" style="background:#1F3D13" title="Gharaana"><img src="${IMG}/03-gharaana.png" alt="Gharaana"></span><span class="bl" style="background:#FFFFFF" title="Patoola"><img src="${IMG}/04-patoola.png" alt="Patoola"></span><span class="bl" style="background:#FDF7E6" title="Creste Kids"><img src="${IMG}/05-creste-kids.png" alt="Creste Kids"></span><span class="bl" style="background:#FFFFFF" title="Sevora"><img src="${IMG}/06-sevora.png" alt="Sevora"></span><span class="bl" style="background:#FFFFFF" title="Sofara"><img src="${IMG}/07-sofara.png" alt="Sofara"></span><span class="bl more">+14</span></div>
+      </div>
+      <div class="trust-row">
+        <span>${TICK}One team for the whole funnel</span>
+        <span>${TICK}Founders on your account</span>
+        <span class="spots"><i></i>Only 3 onboarding spots open this month</span>
       </div>
     </div>
-    ${hub("Real Case Studies", "ROAS before → after", studies.map(([, name, roas]): HubRow => {
-      const [before, after] = roas.replace("ROAS ", "").split(" to ");
-      return [`${name}<small>ROAS</small>`, before, after, `+${Math.round((+after / +before - 1) * 100)}%`];
-    }))}
+
+    <div class="card hub">
+      <div class="hub-top"><h3>Client results board<small>Real numbers from live accounts</small></h3><span class="pill-live"><i></i>Live accounts</span></div>
+      <div class="hub-rows">
+        <div class="hub-row"><div class="who">D2C · Puzzle brand<small>Monthly revenue</small></div><div class="mv"><s>$8.6K →</s><b class="grad">$43K</b></div><span class="t">90 days</span></div>
+        <div class="hub-row"><div class="who">Lead gen · Pilot training<small>Qualified lead rate</small></div><div class="mv"><s>10% →</s><b class="grad">50%</b></div><span class="t">5x sales-ready</span></div>
+        <div class="hub-row"><div class="who">Lead gen · Online school<small>Monthly spend, same CPL</small></div><div class="mv"><s>$50K →</s><b class="grad">$90K</b></div><span class="t">2 months</span></div>
+        <div class="hub-row"><div class="who">Lead gen · Fintech<small>Cost per lead, spend up 20x</small></div><div class="mv"><s>$10.75 →</s><b class="grad">$0.14</b></div><span class="t">−98.7%</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ============ CLIENT WEBSITES (scrolling phone mockups; useLandingScripts duplicates the track for the loop) ============ -->
+<!-- ============ TRUSTED BY (phone mockups) ============ -->
 <section class="trusted" aria-label="Brands growing with Acquirely">
   <p class="trusted-h">Trusted by founders in India, Canada &amp; the USA</p>
   <div class="ph-viewport">
-    <div class="ph-track">${sites.map(([img, url, name, cat]) => `
-      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>${url}</b><span></span></div><div class="ph-screen"><img src="${IMG}/${img}-website-on-mobile.jpg" alt="${name} website on mobile" loading="lazy"></div></div><figcaption><b>${name}</b><span class="ph-cat">${cat}</span></figcaption></figure>`).join("")}
+    <div class="ph-track">
+      ${phone("tactow.in", "09-tactow-website-on-mobile.jpg", "TacTow", "3D wooden puzzles")}
+      ${phone("rightsourceaviation.com", "33-rsa-aviation-website-on-mobile.jpg", "RSA Aviation", "Pilot training academy")}
+      ${phone("gharaana", "10-gharaana-website-on-mobile.jpg", "Gharaana", "Furniture")}
+      ${phone("internationalschooling.org", "30-international-schooling-website-on-mobile.jpg", "International Schooling", "Online school")}
+      ${phone("patoola", "11-patoola-website-on-mobile.jpg", "Patoola", "Indo-Western fashion")}
+      ${phone("kashti.com", "31-kashti-website-on-mobile.jpg", "Kashti", "Fintech app")}
+      ${phone("crestekids.com", "12-creste-kids-website-on-mobile.jpg", "Creste Kids", "DIY craft kits")}
+      ${phone("globalproptech.in", "29-global-proptech-website-on-mobile.jpg", "Global Proptech", "Luxury real estate · Gurugram")}
+      ${phone("nostrain.in", "32-nostrain-website-on-mobile.jpg", "NoStrain", "Footwear")}
+      ${phone("sevora", "13-sevora-website-on-mobile.jpg", "Sevora", "Fashion")}
+      ${phone("sofara", "14-sofara-website-on-mobile.jpg", "Sofara", "Furniture · Canada")}
     </div>
   </div>
 </section>
 
 <!-- ============ NUMBERS (dark) ============ -->
-<section class="band dark" id="results">
+<section class="band dark">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">What you actually get</span>
-      <h2>Results that <span class="grad">speak for themselves.</span></h2>
-      <p>Not vanity metrics. Not "brand awareness." Every outcome below is something we've delivered for real D2C brands — and can deliver for yours.</p>
+      <h2>Numbers don't lie</h2>
+      <p style="color:var(--orange);font-weight:600;margin-top:10px">Revenue for D2C brands. Qualified leads for lead-gen businesses.</p>
+      <p style="font-size:14.5px;margin-top:6px">No vanity metrics. Just real numbers from real accounts.</p>
     </div>
     <div class="stats">
-      <div class="stat reveal"><b>5x</b><span>Peak ROAS delivered — Retroverse, 90 days</span></div>
-      <div class="stat reveal"><b>50+</b><span>D2C brands scaled across fashion, gaming &amp; wellness</span></div>
-      <div class="stat reveal"><b>35%</b><span>Avg. CVR improvement after funnel audit</span></div>
-      <div class="stat reveal"><b>90</b><span>Days to meaningful ROAS shift — our benchmark</span></div>
+      <div class="stat reveal"><b>5x</b><span>Revenue growth for a D2C puzzle brand in one quarter</span></div>
+      <div class="stat reveal"><b>5x</b><span>More sales-ready leads for a $38K–$65K pilot programme</span></div>
+      <div class="stat reveal"><b>98.7%</b><span>Drop in cost per lead for a fintech marketplace</span></div>
+      <div class="stat reveal"><b>$3.2M+</b><span>Ad spend managed by the founding team</span></div>
     </div>
   </div>
 </section>
 
-<!-- ============ RESULTS GRID ============ -->
-<section class="band">
-  <div class="wrap">
-    <div class="d-cards">${results.map(([ic, c, t, d, badge]) => `
-      <div class="card d-card reveal"><span class="ic">${icon(ic, c)}</span><h3>${t}</h3><p>${d}</p><span class="d-badge">${badge}</span></div>`).join("")}
-    </div>
-
-  </div>
-</section>
-
-<!-- ============ WHAT WE ACTUALLY DO ============ -->
-<section class="band white" id="services">
+<!-- ============ CASE STUDIES ============ -->
+<section class="band" id="results">
   <div class="wrap" data-filter-group>
     <div class="head">
-      <span class="eyebrow">What we actually do</span>
-      <h2>Not just ads. A system that <span class="grad">compounds.</span></h2>
-      <p>Most agencies run campaigns. We build the full growth engine — from creative testing to funnel to scale.</p>
+      <span class="eyebrow">Case studies</span>
+      <h2>Two growth engines. <span class="grad">Founders who broke their ceiling.</span></h2>
+      <p>Same system in every account. A different bottleneck in each one.</p>
     </div>
-    <div class="d-tabs" role="group" aria-label="Filter services">
-      <button type="button" data-filter="all" aria-pressed="true">All services</button>
-      <button type="button" data-filter="paid" aria-pressed="false">Paid ads</button>
-      <button type="button" data-filter="funnel" aria-pressed="false">Funnel</button>
-      <button type="button" data-filter="scale" aria-pressed="false">Scale</button>
+    <div class="hm-tabs" role="group" aria-label="Filter case studies">
+      <button type="button" data-filter="all" aria-pressed="true">All (8)</button>
+      <button type="button" data-filter="d2c" aria-pressed="false">D2C (5)</button>
+      <button type="button" data-filter="lead" aria-pressed="false">Lead gen (3)</button>
     </div>
-    <div class="hm-svcs">${services.map(([ic, cat, no, t, d, badge], i) => `
-      <div class="card hm-svc reveal" data-cat="${cat}">
-        <span class="d-no" aria-hidden="true">${no}</span>
-        <span class="ic${i % 2 ? " o" : ""}">${icon(ic, i % 2 ? "#F37513" : "#2B7FFF")}</span>
-        <h3>${t}</h3>
-        <p>${d}</p>
-        <span class="d-badge">${badge}</span>
-      </div>`).join("")}
+    <div class="cases">${cases.map(caseCard).join("")}
+    </div>
+    <div class="center-cta">
+      <a class="btn" ${CTA}>Get the Same Diagnosis ${ARROW}</a>
+      <small>More results: <a href="/ecommerce#results">D2C &amp; ecommerce</a> · <a href="/lead-gen#results">Lead generation</a></small>
     </div>
   </div>
 </section>
 
-<!-- ============ HOW WE HELP YOU GROW ============ -->
-${a3Section("flywheel", "band")}
+<!-- ============ WHY BRANDS STALL ============ -->
+<section class="band white">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Why brands stall</span>
+      <h2>You don't have an ads problem. You have a funnel problem.</h2>
+      <p>Most brands get stuck between $3K and $20K a month. The product is fine. The ads are fine. The leaks sit between the people running each piece, where nobody owns the number.</p>
+    </div>
+    <div class="split">
+      <div class="card">
+        <h3>How most brands run growth</h3>
+        <div class="hm-vendors">
+          <div><b>Ads agency</b>"The website isn't converting."</div>
+          <div><b>Web developer</b>"The traffic is low quality."</div>
+          <div><b>Social freelancer</b>"Engagement is up this month."</div>
+          <div><b>Sales team</b>"These leads never pick up."</div>
+        </div>
+        <ul class="x-list">
+          <li>Creatives tested at random, with no hypothesis</li>
+          <li>Budgets raised on a good day, cut on a bad one</li>
+          <li>Cheap leads that never pick up, traffic that never checks out</li>
+        </ul>
+        <p class="hm-tally">4 vendors · 4 dashboards · 0 owners</p>
+      </div>
+      <div class="andro">
+        <span class="tag">${icon('<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/>', "currentColor")}How we run it</span>
+        <h3>One team owns every stage of the funnel</h3>
+        <div class="hm-stages">
+          <div><b>Attract</b>Meta, Google, LinkedIn, marketplaces, social</div>
+          <div><b>Convert</b>Website, landing pages, lead forms, checkout</div>
+          <div><b>Compound</b>A3 Flywheel, weekly creative, retention</div>
+        </div>
+        <p>RSA proves the point: the fix wasn't a new ad. Moving lead capture from WhatsApp to a website form changed who Meta went looking for.</p>
+        <p><b>1 team · 1 dashboard · 1 number.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- ============ IN-HOUSE COST ============ -->
-${inHouse()}
+<!-- ============ WHY ACQUIRELY ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Why founders pick us</span>
+      <h2>We're not another agency that "runs your ads"</h2>
+    </div>
+    <div class="reasons">
+      ${reason("01", false, "One team owns the whole funnel", [
+        ['<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>', "Everything under one roof", "Meta, Google, LinkedIn, marketplaces, website, CRO and social."],
+        ['<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>', "One number", "One dashboard, one monthly review: profitable revenue or qualified leads."],
+        ['<path d="M4 5h16v14H4z"/><path d="M4 9h16"/>', "Pages built for the ad", "Landing pages designed for the exact ad sending traffic to them."],
+      ], "Our biggest turnarounds rarely came from better targeting. The leak usually sat just outside the ad account, in a place no agency owned. So we took responsibility for it.")}
+      ${reason("02", true, "A system, not guesswork", [
+        ['<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/>', "Runs weekly", "The A3 Flywheel: structure, creative, micro analysis, repeat."],
+        ['<path d="M4 7h16M4 12h16M4 17h10"/>', "A new Pack every week", "From research, net-new concepts and iterations of winners."],
+        ['<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>', "Tested across 20+ accounts", "Built from what actually worked after Andromeda, not from theory."],
+      ], "Creste, Kashti and Patoola all turned on creative, not campaign settings. That's why we built a creative engine, not just a media-buying desk.")}
+      ${reason("03", false, "Expert operators, full transparency", [
+        ['<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/>', "Specialists on every account", "A Meta and a Google specialist, each with 5+ years and $1M+ managed a year."],
+        ['<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>', "One live dashboard", "And one monthly review, built around the number that matters to you."],
+        ['<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/>', "Every decision, shown to you", "Every scale or cut decision comes with the numbers behind it."],
+      ], "At most agencies the founder sells and a junior delivers. Here, the people on your diagnosis call are the people in your account.")}
+    </div>
+    <div class="center-cta"><a class="btn" ${CTA}>Book a Growth Diagnosis Call ${ARROW}</a></div>
+  </div>
+</section>
 
-<!-- ============ BOOK ============ -->
+<!-- ============ SERVICES ============ -->
+<section class="band white" id="services">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">What we do</span>
+      <h2>Not a full-service agency. <span class="grad">A full-funnel one.</span></h2>
+      <p>Full-service agencies sell you a menu. We sell you an outcome. Every service exists to make your next dollar of ad spend more profitable than the last.</p>
+    </div>
+    <div class="promise-top">
+      <span class="ic">${icon('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', "#fff")}</span>
+      <div><b>Full-funnel strategy &amp; strategic media buying</b><span>One strategist decides where every dollar goes next: which channel, which page, or fixing checkout first.</span></div>
+    </div>
+    <div class="hm-svcs">
+      ${svcCard('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', false, "Attract", "Reach the right buyers on the right platform, with creative that actually gets tested.", ["Meta Ads", "Google Ads", "LinkedIn Ads", "Marketplace Ads · Amazon &amp; Flipkart", "Social Media", "Search Visibility · SEO + AEO"])}
+      ${svcCard('<path d="M3 4h18l-7 8v6l-4 2v-8z"/>', true, "Convert", "Turn paid traffic into orders and qualified leads. We fix pages, checkout and tracking before we scale spend.", ["Website Design &amp; Development", "Landing Pages", "Conversion Rate Optimisation", "Checkout, COD &amp; RTO", "Tracking &amp; Attribution"])}
+      ${svcCard('<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>', false, "Compound", "Every month builds on the last instead of starting over. Winners get scaled, insights feed the next round.", ["The A3 Flywheel", "Creative Strategy &amp; Testing", "Retargeting &amp; Repeat Purchase", "Live Reporting"])}
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLYWHEEL ============ -->
+<section class="band" id="flywheel">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">The method</span>
+      <h2>The A3 Flywheel: how we scale after Andromeda</h2>
+      <p>When Andromeda landed, interest targeting stopped working across most of the 20+ ad accounts we managed, ecommerce and lead gen alike. So we rebuilt how we run them: one structure, three systems, run every week.</p>
+    </div>
+    <div class="card fly fly-img">
+      <a class="fly-diagram-link" href="/images/a3-flywheel.png" target="_blank" rel="noopener" aria-label="Open the A3 Flywheel diagram full size"><img class="fly-diagram" src="/images/a3-flywheel.png" width="3000" height="1800" loading="lazy" decoding="async" alt="A3 Flywheel account structure: Campaign 1 is a Prospecting CBO running dated Broad Packs of creatives, whose winners are found and scaled; Campaign 2 is a Retention campaign fed by new arrivals and custom offers"></a>
+      <div class="stages">
+        <div class="stage"><span class="code">A1</span><div><h3>Foundation Structure</h3><p>Two campaigns, not five. One Prospecting CBO that tests and scales new-customer ads, and one Retention campaign for people who've already bought.</p></div></div>
+        <div class="stage"><span class="code">A2</span><div><h3>Creative Framework</h3><p>A new creative Pack every week, from competitor research, net-new concepts and iterations of proven winners.</p></div></div>
+        <div class="stage"><span class="code">A3</span><div><h3>Micro Analysis</h3><p>Meta doesn't perform the same every day, so your budget shouldn't either. With 90 days of data, spend moves from weak days to strong ones.</p></div></div>
+      </div>
+    </div>
+
+    <div class="dcard" id="playbook" style="margin-top:40px">
+      <div>
+        <span class="eyebrow">Free playbook</span>
+        <h2 style="margin-top:10px">Get the full A3 Flywheel playbook</h2>
+        <p style="margin-top:10px">The exact rules we run in client accounts. Inside, you'll learn:</p>
+        <ul class="ticks">
+          <li><span><b>Why your new creatives get almost no spend</b>, and the one ad-set setting that gives every Pack a fair 7-day test.</span></li>
+          <li><span><b>Why we killed our own Scale campaign</b>, and where scaling happens now instead.</span></li>
+          <li><span><b>How to stop spending the same budget every day</b> when some days return 5x and others 2.5x.</span></li>
+          <li><span><b>What to do when your best ad starts dying.</b> Pausing it is usually the mistake that crashes ROAS.</span></li>
+        </ul>
+      </div>
+      <div class="dform pb-cta">
+        <span class="eyebrow">Free · 2-minute form</span>
+        <h3>Send me the playbook</h3>
+        <p>Tell us where to send it and your monthly ad spend. The playbook lands in your inbox and on WhatsApp.</p>
+        <a class="btn blue" href="${PLAYBOOK}" target="_blank" rel="noopener nofollow">Send Me the Playbook ${ARROW}</a>
+        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>No spam. We never share your details.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INDUSTRIES ============ -->
+<section class="band white" id="industries">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Industries</span>
+      <h2>Two growth engines. Built for how your buyer decides.</h2>
+      <p>A $5 snack and a $6,500 enrolment need completely different funnels. We run two specialist practices, each with its own playbook and its own success metric.</p>
+      <div class="hm-legend"><span><i class="chip">Proven</i>Categories we've grown</span><span><i class="chip soon">Onboarding</i>Playbook ready, taking first brands</span></div>
+    </div>
+    <div class="hm-ind">
+      <div class="card reveal">
+        <div class="hm-ind-top"><span class="ic">${icon('<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>')}</span><div><h3>D2C &amp; Ecommerce</h3><small>Measured on revenue, ROAS, RTO and repeat purchase</small></div></div>
+        ${chips(["Apparel &amp; Fashion", "Jewellery &amp; Accessories", "Hair Care", "Ayurveda", "DIY Toys &amp; Learning Kits", "Furniture &amp; Home Décor", "Food &amp; Snacks", "Gaming &amp; Electronics", "Skincare &amp; Beauty"], ["Ethnic Wear", "Supplements &amp; Nutrition", "Home Appliances"])}
+        <a class="btn line" href="/ecommerce">Explore D2C growth →</a>
+      </div>
+      <div class="card reveal">
+        <div class="hm-ind-top"><span class="ic o">${icon('<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 11h5"/><path d="M18.5 8.5v5"/>', "#F37513")}</span><div><h3>Lead Generation</h3><small>Measured on qualified leads and booked meetings, not form fills</small></div></div>
+        <div><p class="hm-sub">B2B · reach decision-makers</p>${chips(["Education Publishers", "EdTech for Schools", "Industrial &amp; Safety Supplies", "Wholesale Fashion"], ["B2B SaaS &amp; Services"])}</div>
+        <div><p class="hm-sub">B2C · high-intent consumers</p>${chips(["Admissions &amp; Courses", "Fintech &amp; Financial Services", "Real Estate", "Healthcare &amp; Clinics", "Home Services"], ["Interiors &amp; Architects", "Coaching &amp; Consulting"])}</div>
+        <a class="btn line" href="/lead-gen">Explore lead generation →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WALL OF WINS ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Wall of wins</span>
+      <h2>Straight from Ads Manager and client chats</h2>
+      <p>Screenshots from client accounts and chats. Cropped for privacy. Every number is exactly as the platform shows it.</p>
+    </div>
+    <div class="wins">${wins.map(([src, alt, who, line]) => `
+      <figure class="win"><img src="${IMG}/${src}" alt="${alt}" loading="lazy"><figcaption><span>${who}</span>${line}</figcaption></figure>`).join("")}
+    </div>
+    <div class="center-cta"><a class="btn" ${CTA}>Book a Growth Diagnosis Call ${ARROW}</a></div>
+  </div>
+</section>
+
+<!-- ============ WHO THIS IS FOR ============ -->
+<section class="band white">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Who this is for</span>
+      <h2>We say no to most brands. Here's why.</h2>
+      <p>We work with two kinds of founders: brands ready to scale, and new brands ready to launch properly. What both need is clarity and commitment. If that's not you yet, we'll tell you on the call.</p>
+    </div>
+    <div class="fit hm-fit">
+      <div class="card yes">
+        <h3>Scaling brands</h3>
+        <ul>
+          <li>Spend $5K+ a month on ads</li>
+          <li>Have a product or service that already sells</li>
+          <li>Hit a ceiling when you try to scale</li>
+          <li>Are tired of four vendors who blame each other</li>
+        </ul>
+      </div>
+      <div class="card yes">
+        <h3>New brands, launched right</h3>
+        <ul>
+          <li>Have a clear vision for the brand and who it's for</li>
+          <li>Have a planned budget for the launch, not just the first ads</li>
+          <li>Want one team to build the funnel from day one: website, tracking, creative and ads</li>
+          <li>Would rather launch once, properly, than fix it later</li>
+        </ul>
+      </div>
+      <div class="card no">
+        <h3>Not a fit if you</h3>
+        <ul>
+          <li>Have an idea but no clear vision or launch budget yet</li>
+          <li>Are shopping for the cheapest option</li>
+          <li>Aren't ready to scale spend when it works</li>
+          <li>Expect results in week one without data</li>
+        </ul>
+      </div>
+    </div>
+    <div class="center-cta">
+      <a class="btn" ${CTA}>Yes, I'm Ready. Apply Now ${ARROW}</a>
+      <small>Not sure? Apply anyway. We reply within 24 hours.</small>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW WE WORK (dark) ============ -->
+<section class="band dark">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">How we work</span>
+      <h2>Built on accountability, not empty promises</h2>
+    </div>
+    <div class="promise">
+      <div class="stat"><b style="font-size:18px">A fair 75–90 day window</b><span>Micro Analysis needs 90 days of your data. That's when the system shows what it can do.</span></div>
+      <div class="stat"><b style="font-size:18px">Top 1% experts only</b><span>5+ years running ads and $1M+ managed in a year, each. A Meta and a Google specialist on every account.</span></div>
+      <div class="stat"><b style="font-size:18px">You own everything</b><span>Your ad accounts, pixel, data and website stay in your name. Always.</span></div>
+      <div class="stat"><b style="font-size:18px">Data-backed decisions</b><span>Every scale or cut has a number behind it you can see.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOUNDERS ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Who you'll work with</span>
+      <h2>Built by operators, not just agency owners</h2>
+    </div>
+    <div class="team">
+      <div class="card person">
+        <div class="avatar"><img src="${IMG}/mausam-arora.jpg" alt="Mausam Arora" loading="lazy"></div>
+        <div>
+          <h3>Mausam Arora</h3>
+          <p class="role">Co-founder · Funnels &amp; GTM</p>
+          <p>12 years building businesses in education: curricula, 300+ books, and distribution to 2,000+ schools. Brings go-to-market thinking and funnel strategy to every account he scales.</p>
+          <a href="https://www.linkedin.com/in/mausamarora/" ${ext}>${LINKEDIN}LinkedIn</a>
+        </div>
+      </div>
+      <div class="card person">
+        <div class="avatar"><img src="${IMG}/kunal-mandal.jpg" alt="Kunal Mandal" loading="lazy"></div>
+        <div>
+          <h3>Kunal Mandal</h3>
+          <p class="role">Co-founder · Meta strategy</p>
+          <p>$3.2M+ managed across 30+ brands in ecommerce and leadgen. A hands-on Meta strategist who runs full-funnel systems across Meta and Google.</p>
+          <a href="https://www.linkedin.com/in/kunal-meta-ads/" ${ext}>${LINKEDIN}LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div class="team-strip">
+      <div class="faces">
+        <img src="${IMG}/founder1.png" alt="Acquirely team member" loading="lazy">
+        <img src="${IMG}/founder2.png" alt="Acquirely team member" loading="lazy">
+        <img src="${IMG}/founder3.png" alt="Acquirely team member" loading="lazy">
+        <img src="${IMG}/founder4.png" alt="Acquirely team member" loading="lazy">
+        <img src="${IMG}/founder5.png" alt="Acquirely team member" loading="lazy">
+      </div>
+      <span>Plus the strategists, editors, designers and developers behind every account</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="band white" id="faq">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">FAQ</span>
+      <h2>Questions founders ask us</h2>
+    </div>
+    <div class="faq">${faqs.map(([q, a]) => `
+      <details><summary>${q}</summary><p>${a}</p></details>`).join("")}
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOLS ============ -->
+<section class="band white" id="tools">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Free tools</span>
+      <h2>Make better decisions with your numbers</h2>
+      <p>Estimate ecommerce profitability or see the return on your lead-generation spend.</p>
+    </div>
+    <div class="hm-tools">
+      <a class="card hm-tool reveal" href="${MAIN}/ecommerce-calculator">
+        <span class="ic">${icon('<path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L22 7H6"/>')}</span>
+        <span class="chip">D2C · Dropshipping</span>
+        <h3>Dropshipping &amp; ecommerce calculator</h3>
+        <p>Calculate profit, margins, ROAS, RTO costs and break-even CPA for COD and prepaid orders.</p>
+        <span class="hm-tool-link">Open ecommerce calculator ${ARROW}</span>
+      </a>
+      <a class="card hm-tool reveal" href="${MAIN}/roi-calculator">
+        <span class="ic o">${icon('<circle cx="12" cy="12" r="9"/><path d="M16 8h-5a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4H8"/><path d="M12 6v2m0 8v2"/>', "#F37513")}</span>
+        <span class="chip">Lead generation · Business ROI</span>
+        <h3>ROI calculator</h3>
+        <p>See profit after ad spend, sales salaries and office costs, including one-time or recurring payments.</p>
+        <span class="hm-tool-link">Open ROI calculator ${ARROW}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
 <section class="band" id="book">
   <div class="wrap">
     <div class="dcard">
       <div>
-        <h2>Ready to see if this works for your brand?</h2>
-        <p style="margin-top:12px">We'll audit your current funnel and ad account — no pitch, no fluff. Just an honest look at what's working and what isn't.</p>
+        <h2>Stuck at $10K, $20K or 2.5 ROAS? <span class="grad">So were they.</span></h2>
+        <p style="margin-top:12px">Book a 30-minute Growth Diagnosis. We'll look at your ads, website and funnel, show you where it's leaking, and tell you straight whether we're the right fit.</p>
         <ul class="ticks">
-          <li>Free funnel &amp; ad account audit</li>
-          <li>30-minute strategy call, no obligation</li>
-          <li>Custom ROAS projection for your brand</li>
+          <li>Free ad account, website and funnel audit</li>
+          <li>30-minute diagnosis call, no obligation</li>
+          <li>A straight answer on whether we're the right fit</li>
         </ul>
       </div>
       <div style="display:grid;align-content:center">
         <span class="eyebrow">Your move</span>
-        <a class="btn blue" href="${BOOK}" ${ext} style="margin-top:16px;width:100%;padding:16px 22px;font-size:16px">Book a Funnel Review ${ARROW}</a>
-        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Usually responded to within 24 hours</p>
+        <h3 style="margin-top:10px">Book your diagnosis call</h3>
+        <a class="btn blue" ${CTA} style="margin-top:22px;width:100%;padding:16px 22px;font-size:16px">Book Your Free Call! ${ARROW}</a>
+        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>3 spots open this month. We reply within 24 hours.</p>
       </div>
     </div>
   </div>
 </section>
 
-${footer([["#services", "What We Do"], ["#flywheel", "A3 System"]])}
+${siteFooter()}
 
-${mcta("Book a Growth Call Here!")}
+<div class="mcta"><a class="btn" ${CTA}>Book a Growth Diagnosis Call</a></div>
 `;
 
 export default withImgDims(markup);
