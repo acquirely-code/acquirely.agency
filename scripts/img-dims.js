@@ -5,7 +5,7 @@ const path = require("path");
 const m = require("next/dist/compiled/image-size");
 const sizeOf = m.imageSize || m.default || m;
 
-const DIRS = ["ecommerce/img"];
+const DIRS = ["ecommerce/img", "publishers/img"];
 const pub = path.join(__dirname, "..", "public");
 const out = {};
 

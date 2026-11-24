@@ -1,169 +1,468 @@
 import { withImgDims } from "@/lib/img-dims";
-import { BOOK, ext, ARROW, TICK, SHIELD, P, icon, nav, hub, a3Section, metricTable, quote, inHouse, faqList, person, footer, mcta } from "@/app/ecommerce/shared";
-// Page markup for /lead-gen, rendered by Landing (app/ecommerce/Landing.tsx).
+import { BOOK } from "@/components/site-chrome/markup";
+import { THEME_TOGGLE } from "../ecommerce/theme";
+// Page markup for /lead-gen, rendered by LeadGenLanding. Shares ecommerce.css; lead-gen-only styles live in lead-gen.css.
+// The acquirely.in/lead-gen page with USD amounts (₹93/$; plan prices are set for this site). Every CTA opens the booking page.
+const CTA = `href="${BOOK}" target="_blank" rel="noopener nofollow"`;
+const ARROW = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
+const TICK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+const LINKEDIN = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 11.02 5 2.5 2.5 0 01-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.2 21 14.5V21h-4v-5.8c0-1.4 0-3.2-1.95-3.2S12.8 13.5 12.8 15.1V21H9z"/></svg>`;
 
-const optimizeFor: [string, string][] = [
-  [P.target, "Cost per lead (CPL)"],
-  [P.bars, "Lead volume"],
-  [P.form, "Form fills"],
-  [P.dollar, "Daily spend"],
-];
-const actuallyMatters: [string, string][] = [
-  [P.shield, "Cost per qualified lead (CPQL)"],
-  [P.trend, "Lead-to-close rate"],
-  [P.user, "Sales-accepted leads"],
-  [P.zap, "Predictable pipeline"],
-];
+const phone = (domain: string, img: string, name: string, cat: string) =>
+  `<figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>${domain}</b><span></span></div><div class="ph-screen"><img src="${img}" alt="${name} website on mobile" loading="lazy"></div></div><figcaption><b>${name}</b><span class="ph-cat">${cat}</span></figcaption></figure>`;
 
-const marketShift = [
-  "Minor creative tweaks",
-  "Changing audience interests blindly",
-  "Increasing budgets without a system",
-  "Switching Campaigns on &amp; off",
-];
+// Seven phones are narrower than a wide screen, so the set is repeated 3x in the markup (useLandingScripts then
+// doubles the track for the seamless -50% loop). Repeats are aria-hidden so screen readers hear each brand once.
+const phoneSet = [
+  phone("kashti.com", "/ecommerce/img/31-kashti-website-on-mobile.jpg", "Kashti", "Fintech app"),
+  phone("rightsourceaviation.com", "/ecommerce/img/33-rsa-aviation-website-on-mobile.jpg", "RSA Aviation", "Pilot training academy"),
+  phone("internationalschooling.org", "/ecommerce/img/30-international-schooling-website-on-mobile.jpg", "International Schooling", "Online school · 9+ countries"),
+  phone("globalproptech.in", "/ecommerce/img/29-global-proptech-website-on-mobile.jpg", "Global Proptech", "Luxury real estate · Gurugram"),
+  phone("2ndcareers.com", "/ecommerce/img/34-2nd-careers-website-on-mobile.jpg", "2nd Careers", "Career platform"),
+  phone("adasupply.com", "/ecommerce/img/35-ada-supplies-website-on-mobile.jpg", "ADA Supplies", "Safety equipment · USA"),
+  phone("silverzone.org", "/ecommerce/img/36-silverzone-website-on-mobile.jpg", "SilverZone", "School Olympiads"),
+].join("");
 
-// [title, chip, result, result label, after label, rows, quote, author]
-const cases: [string, string, string, string, string, [string, string, string][], string, string][] = [
-  ["Financial Services Brand Loan Lead Generation", "Financial services · Lead gen", "+140%", "Monthly lead volume in 90 days", "After (90 days)", [
-    ["Monthly lead volume", "1,200", "2,880 (+140%)"],
-    ["Cost per lead", "Baseline", "Down 32%"],
-    ["Qualified lead rate", "28%", "41% (stable)"],
-    ["Ad spend", "Baseline", "2.75x scaled"],
-  ], "\"Acquirely didn't just run ads. They built a system that lets us predict how many qualified leads we'll get at what cost. That's rare.\"", "Founder, Financial Services Brand"],
-  ["International Education Brand (9 Regions, SGD 3K/day)", "Education · Lead gen", "4 → 9", "Active regions in 6 months", "After (6 months)", [
-    ["Active regions", "4", "9"],
-    ["Cost per lead (avg)", "$18", "$13 (-28%)"],
-    ["Daily ad spend", "SGD 1K", "SGD 3K (scaled)"],
-    ["Inquiry-to-enrollment", "Baseline", "+22%"],
-  ], "\"We were spending SGD 90K/month with no predictability. Now we know exactly what each region delivers.\"", "CMO, International Education Brand"],
-  ["Professional Training Brand High-Ticket Program ($55K-$75K CAD)", "Professional training · Lead gen", "3x", "Enrollment inquiries in 4 months", "After (4 months)", [
-    ["Qualified leads/month", "18", "30 (+67%)"],
-    ["Cost per qualified lead", "Baseline", "Down 41%"],
-    ["Enrollment inquiries", "6", "18 (3x)"],
-    ["Ad spend", "Baseline", "4x scaled"],
-  ], "\"Selling a high-ticket program via Facebook? Everyone said it's impossible. Acquirely built a system that actually works.\"", "Founder, Professional Training Brand"],
-];
+// Results band card. `before` is optional: "$10.75+" renders as "$10.75+ → $0.14".
+const rc = (brand: string, label: string, big: string, note: string, before = "") =>
+  `<div class="rc reveal"><div class="rc-who"><b>${brand}</b><small>${label}</small></div><div class="rc-mv">${before ? `<s>${before} →</s>` : ""}<b>${big}</b></div><p class="rc-note">${note}</p></div>`;
 
-const caseCard = ([title, chip, result, label, after, rows, q, who]: (typeof cases)[number], i: number) => `
+// Proof panel, option 1: screenshots. A null src shows a "Screenshot coming" placeholder.
+// Only real, unedited Ads Manager / CRM screenshots go here. Cropping is fine, changing numbers is not.
+// `video` (a Wistia media id) makes the entry a play-in-place video with `src` as its poster. The poster is a
+// background, not an <img>, so clicking it doesn't also open the screenshot lightbox.
+type Shot = { src: string | null; alt?: string; cap: string; sub: string; video?: string };
+const shots = (list: Shot[]) => `
+          <div class="proofs">
+            ${list.map((s) => s.video
+              ? `<figure class="proof-shot lg-shot-vid"><div class="vid" data-video="https://fast.wistia.net/embed/iframe/${s.video}?autoPlay=true&playerColor=2949E5"><button class="vid-screen" type="button" aria-label="Play: ${s.alt}" style="background-image:url('${s.src}')"><span class="vid-play"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg></span></button></div><figcaption><b>${s.cap}</b> ${s.sub}</figcaption></figure>`
+              : s.src
+              ? `<figure class="proof-shot"><img src="${s.src}" alt="${s.alt}" loading="lazy"><figcaption><b>${s.cap}</b> ${s.sub}</figcaption></figure>`
+              : `<figure class="proof-shot lg-shot-ph"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg><span>Screenshot coming</span></div><figcaption><b>${s.cap}</b> ${s.sub}</figcaption></figure>`).join("\n            ")}
+            ${list.some((s) => s.src && !s.video) ? `<p class="proof-hint">Tap a screenshot to enlarge</p>` : ""}
+          </div>`;
+
+// Proof panel, option 2: before/after bars. Widths are % of the larger value.
+type Bar = { label: string; before: string; after: string; bw: number; aw: number; lower?: boolean };
+const bars = (list: Bar[], note = "") => `
+          <div class="lg-bars">
+            ${list.map((b) => `<div class="lg-bar">
+              <p class="lg-bar-l">${b.label}${b.lower ? ` <small>(lower is better)</small>` : ""}</p>
+              <div class="lg-bar-r"><span>Before</span><i style="width:${b.bw}%"></i><b>${b.before}</b></div>
+              <div class="lg-bar-r after"><span>After</span><i style="width:${b.aw}%"></i><b>${b.after}</b></div>
+            </div>`).join("\n            ")}
+            ${note ? `<p class="lg-bar-note">${note}</p>` : ""}
+          </div>`;
+
+type Case = {
+  n: string; stat: string; statLabel: string; proof: string; chip: string; live?: boolean;
+  title: string; facts: [string, string][]; story: string; cta: string;
+};
+const caseStudy = (c: Case) => `
       <article class="card case reveal">
         <div class="case-data">
-          <div class="k"><small>Result</small><b class="grad">${result}</b><span>${label}</span></div>
-          ${quote(q, who)}
+          <div class="k"><small>Result</small><b class="grad">${c.stat}</b><span>${c.statLabel}</span></div>${c.proof}
         </div>
         <div class="case-body">
-          <div class="case-top"><span class="num${i % 2 ? " o" : ""}">0${i + 1}</span><span class="chip">${chip}</span></div>
-          <h3>${title}</h3>
-${metricTable(after, rows)}
-          <a class="btn line" href="${BOOK}" ${ext}>Book Your Lead Gen Growth Audit →</a>
+          <div class="case-top"><span class="num${Number(c.n) % 2 === 0 ? " o" : ""}">${c.n}</span><span class="chip">${c.chip}</span>${c.live ? `<span class="chip lg-live"><i></i>Live</span>` : ""}</div>
+          <h3>${c.title}</h3>
+          <dl class="facts">
+            ${c.facts.map(([t, d], i) => `<div><dt>${t}</dt><dd>${i === c.facts.length - 1 ? `<b>${d}</b>` : d}</dd></div>`).join("\n            ")}
+          </dl>
+          <p class="story">${c.story}</p>
+          <a class="btn line" ${CTA}>${c.cta}</a>
         </div>
       </article>`;
 
-const tier = (name: string, spend: string, price: string, unit: string, fine: string, inc: string, items: string[], flag = "") => `
-      <div class="card tier">
-        ${flag ? `<span class="flag">${flag}</span>` : ""}
-        <h3>${name}</h3>
-        <span class="eyebrow">For ad spend: ${spend}</span>
-        <div class="big grad">${price}<small>${unit}</small></div>
-        <p class="fine-print">${fine}</p>
-        <p class="inc">${inc}</p>
-        <ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>
-        <a class="btn" href="${BOOK}" ${ext}>Book a Funnel Audit ${ARROW}</a>
-      </div>`;
+const cases: Case[] = [
+  {
+    n: "01", stat: "150+", statLabel: "Paid principal registrations in 2 months",
+    proof: shots([
+      { src: "/publishers/img/propel-immersion-highlights-poster.jpg", alt: "Moments from Immersion 2024, Propel's PBL conference for school leaders", cap: "Immersion", sub: "The conference principals paid to attend", video: "l92ehzkidg" },
+    ]),
+    chip: "B2B · Paid conference",
+    title: "150+ principals paid $215 each to attend a conference",
+    facts: [
+      ["Client", "A PBL curriculum provider with fewer than 10 full-time staff"],
+      ["Starting point", "No sales force, and a goal of 100 paid seats in 60 days"],
+      ["2-month result", "150+ registrations. $247K+ revenue on $3.2K spend."],
+    ],
+    story: "Instead of hiring salespeople, we proposed that Propel host Immersion, a 3-day residential conference in Delhi for school leaders, priced at $215. Principals are among the hardest audiences to reach on Meta, and asking them to pay for a conference is harder still. Through the A3 Flywheel, we tested new creative angles every week and scaled the winners. The result: 150+ paid seats at about $22 each, $215K+ in curriculum orders after the event, and adoption by City Montessori School, Lucknow, the world's largest school.",
+    cta: "Get the same diagnosis →",
+  },
+  {
+    n: "02", stat: "−99%", statLabel: "Cost per registered user, Mar → Jun 2026",
+    proof: bars([
+      { label: "Cost per registration", before: "$10.75–$21.50", after: "$0.14", bw: 100, aw: 4, lower: true },
+      { label: "Reach", before: "1x", after: "4.75x", bw: 21, aw: 100 },
+    ]),
+    chip: "Fintech · App registrations",
+    title: "\"Meta never works for us.\" Now it's ~25.7K registrations a month.",
+    facts: [
+      ["Client", "Kashti, loan marketplace connecting borrowers with banks and NBFCs"],
+      ["Starting point", "Offer-led leads at $10.75–$21.50 each"],
+      ["Result", "Brand-led registrations at $0.14. ~25.7K a month."],
+    ],
+    story: "Kashti came to us in March 2026 convinced Meta didn't work, and at over $10.75 a lead the numbers agreed. Structured creative testing showed the offer-led angle was the problem. We shifted to brand-led creative that drove registrations instead of one-off leads. Cost per registered user fell 99% to $0.14, reach grew 4.75x, and the account now brings in around 25,700 registrations a month.",
+    cta: "Get the same audit →",
+  },
+  {
+    n: "03", stat: "5x", statLabel: "More sales-qualified leads at the same spend",
+    proof: bars([
+      { label: "Sales-qualified lead rate", before: "10%", after: "50%", bw: 20, aw: 100 },
+      { label: "Cost per qualified lead", before: "$16", after: "$3.20", bw: 100, aw: 20, lower: true },
+    ], "Cost per lead held at ~$1.60, unchanged."),
+    chip: "High-ticket training · $38K–$65K per enrolment",
+    title: "Same cost per lead. 5x more leads worth calling.",
+    facts: [
+      ["Client", "RSA Aviation (Right Source Aviation), pilot training academy"],
+      ["Starting point", "1 in 10 leads sales-qualified. $16 per qualified lead."],
+      ["Result", "1 in 2 leads sales-qualified. $3.20 per qualified lead."],
+    ],
+    story: "Pilot training is a high-ticket decision, and most leads were students who couldn't fund it. Cheap leads were flooding the sales team with calls that went nowhere. We rebuilt targeting around who can actually enrol: income-screened audiences (household income $10,750+), and excluding Grade 9–10 students. Cost per lead stayed around $1.60, but the share of leads the sales team could work went from 10% to 50%.",
+    cta: "Get the same audit →",
+  },
+  {
+    n: "04", stat: "&lt;$1.62", statLabel: "Cost per school lead, 300+ leads",
+    proof: shots([
+      { src: "/publishers/img/ipstudy-meta-ads-manager-323-school-leads.jpg", alt: "IP Study Meta Ads Manager: 323 school leads", cap: "Meta Ads Manager", sub: "School leads" },
+    ]),
+    chip: "B2B · Field sales team",
+    title: "300+ school leads in under a month, at under $1.62 each",
+    facts: [
+      ["Client", "A school books publisher with a 100+ person field sales force"],
+      ["Starting point", "10,000 cold school visits a year, most of them wasted"],
+      ["30-day result", "300+ genuine leads. About 40% lower cost per school won (projected)."],
+    ],
+    story: "IP Study's reps visited about 10,000 schools a year. Most samples never reached a decision-maker, and the company kept paying travel, hotel and sampling costs regardless. We flipped the model: Meta Ads find interested schools first. A product expert gives the demo, and reps visit only for scheduled meetings with principals and HoDs. Running on the A3 Flywheel, the campaign delivered 300+ leads in under a month. The projection for this year is 30% higher conversion and about 40% lower cost per school won.",
+    cta: "Get the same diagnosis →",
+  },
+  {
+    n: "05", stat: "+40%", statLabel: "Qualified enrolment leads, across 9+ countries",
+    proof: bars([
+      { label: "Qualified enrolment leads", before: "Baseline", after: "+40%", bw: 71, aw: 100 },
+      { label: "Consultation show-rate", before: "Baseline", after: "+25%", bw: 80, aw: 100 },
+    ]),
+    chip: "Online school · 9+ countries",
+    title: "One budget, nine countries, and qualified leads up 40%",
+    facts: [
+      ["Client", "International Schooling, global online K-12 school (American curriculum)"],
+      ["Scale", "SGD 3,000/day across 9+ countries. Fees $1,075–$6,450 per enrolment."],
+      ["Result", "Qualified enrolment leads +40%. Consultation show-rate +25%."],
+    ],
+    story: "With fees between $1,075 and $6,450, a lead that never shows up to the consultation is expensive. Running one budget across 9+ countries also meant cost per qualified lead could swing wildly by market. We structured spend so every geography was judged on qualified leads, not raw volume, and kept cost per qualified lead stable across markets while lifting qualified enrolment leads 40% and consultation show-rate 25%.",
+    cta: "Get the same audit →",
+  },
+  {
+    n: "06", stat: "40+", statLabel: "Paid registrations, six weeks before the event",
+    proof: shots([
+      { src: "/publishers/img/agastya-meta-ads-manager-cost-per-lead-803-to-80.jpg", alt: "Agastya Meta Ads Manager, last 30 days: Conclave 2026 form campaign with 729 leads at $0.87 per lead, down from $8.63–$9.71 on earlier campaigns", cap: "Meta Ads Manager", sub: "Last 30 days: 729 leads at $0.87, down from $8.63–$9.71" },
+    ]),
+    chip: "Nonprofit · Paid event", live: true,
+    title: "School leaders paying $215 to travel to Kuppam",
+    facts: [
+      ["Client", "One of India's leading education nonprofits, reaching 40M+ children"],
+      ["Starting point", "A cold ad account, a remote venue and a 100-seat target"],
+      ["Results so far (live)", "40+ paid registrations at about $54 each."],
+    ],
+    story: "Agastya's Education Leaders Conclave 2026, The Future of Learning in the AI Era, runs 10–12 December at its campus in Kuppam, Andhra Pradesh. The goal is 100 school founders, principals and academic heads at up to $215 each. That meant a premium ticket, a trip most attendees had never made, and an ad account with almost no history. Building on the Propel playbook and the A3 Flywheel, we tested new angles every week. Within $2,150 of spend, 40+ leaders had paid, and the campaign is now scaling toward the target.",
+    cta: "Get the same diagnosis →",
+  },
+];
+
+// Pricing tier. `off` items render greyed out with ✕; `more` fills the "See everything included" dropdown.
+type Tier = {
+  id: string; name: string; price: string; line: string; tagline: string; inc: [string, string?][]; off?: string[];
+  more: [string, string][]; btn: string; btnClass: string; flag?: string; badge?: string; under?: string;
+};
+const tier = (t: Tier) => `
+      <article class="card lg-tier lg-tier-${t.id}">
+        ${t.flag ? `<span class="lg-flag">${t.flag}</span>` : ""}
+        <div class="lg-tier-top"><h3>${t.name}</h3>${t.badge ? `<span class="lg-save">${t.badge}</span>` : ""}</div>
+        <p class="lg-tagline">${t.tagline}</p>
+        <div class="lg-amt">${t.price}<small>+ tax / month</small></div>
+        <p class="lg-strike">${t.line}</p>
+        <ul class="lg-inc">
+          ${t.inc.map(([s, tag]) => `<li><span>${s}${tag ? ` <em>${tag}</em>` : ""}</span></li>`).join("\n          ")}
+          ${(t.off || []).map((s) => `<li class="off">${s}</li>`).join("\n          ")}
+        </ul>
+        <details class="lg-more"><summary>See everything included</summary><dl>
+          ${t.more.map(([a, b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join("\n          ")}
+        </dl></details>
+        <a class="btn ${t.btnClass}" ${CTA}>${t.btn}</a>
+        ${t.under ? `<p class="lg-under">${t.under}</p>` : ""}
+      </article>`;
+
+const tiers: Tier[] = [
+  {
+    id: "lead", name: "Lead Engine", price: "$1,500", line: "Founding rate",
+    tagline: "Meta ads that bring in screened leads.",
+    inc: [["Facebook &amp; Instagram Ads, fully managed"], ["Unlimited creatives"], ["Lead scoring + OTP validation"]],
+    off: ["Google, YouTube &amp; LinkedIn Ads", "Landing pages + lead capture", "No-show reminders + nurture sequences", "Closed deals fed back to Meta &amp; Google", "Qualified-Lead Floor guarantee"],
+    more: [
+      ["Full Facebook &amp; Instagram Ads", "Launch, management and daily optimisation."],
+      ["GTM + conversion tracking", "Every lead traced to the ad, audience and city that brought it."],
+      ["All static creatives + video editing", "Unlimited angle testing, never billed per asset."],
+      ["Lead scoring + intent filtering", "People who can't buy, filtered out before your team sees them."],
+      ["Phone / OTP validation", "Fake numbers killed at the source."],
+    ],
+    btn: "Start with Lead Engine", btnClass: "line",
+  },
+  {
+    id: "growth", name: "Growth Engine", price: "$2,500", line: "Founding rate",
+    flag: "Most clients pick this",
+    tagline: "Leads and the follow-up system that turns them into closed deals.",
+    inc: [
+      ["Everything in Lead Engine"], ["Google Search, PMax, YouTube &amp; LinkedIn Ads"], ["Landing pages + lead capture"], ["WhatsApp + email no-show reminders"],
+      ["Automated nurture for leads not ready yet"], ["Closed deals fed back to Meta &amp; Google", "The big lever"],
+      ["<b>Qualified-Lead Floor:</b> we work free until we hit your number"],
+    ],
+    more: [
+      ["Everything in Lead Engine", "Meta ads, tracking, creatives, lead scoring, OTP validation."],
+      ["Google Ads (Search, PMax &amp; YouTube)", "Meta creates demand; Google captures it the moment someone searches."],
+      ["LinkedIn Ads", "Reach owners and directors by job title and company."],
+      ["Landing pages + lead capture", "Mobile-first pages built to turn a click into a booked call."],
+      ["WhatsApp + email reminders", "Cuts no-shows. The lead who booked actually turns up."],
+      ["Automated nurture sequences", "Leads not ready this month stay warm."],
+      ["Conversion API + offline conversions", "Closed deals fed back to Meta &amp; Google so they hunt buyers, not clicks."],
+      ["Weekly reporting + strategy call", "Cost per qualified lead every week."],
+    ],
+    btn: "Get the Growth Engine", btnClass: "", under: "Only $1,000 more than Lead Engine",
+  },
+  {
+    id: "dfy", name: "Done-For-You Engine", price: "$4,500", line: "Limited to a few clients at a time",
+    tagline: "Your entire marketing team, outsourced.",
+    inc: [["Everything in Growth Engine"], ["Our team calls, screens &amp; warms every lead"], ["SEO + AEO (Google &amp; AI search)"], ["Google Business Profile"], ["Social media management"], ["Website + landing pages"]],
+    more: [
+      ["Everything in Growth Engine", "The complete Meta + Google + LinkedIn system."],
+      ["Pre-screened, warmed leads", "Our team calls every lead, screens for fit and budget, and warms them up."],
+      ["SEO + AEO", "Rank on Google and get cited in ChatGPT, Perplexity and AI Overviews."],
+      ["Google Business Profile", "Optimised and managed for local search and Maps."],
+      ["Social media management", "Content and posting on your brand handles."],
+      ["Website + landing pages", "Built, maintained and conversion-tested by us."],
+    ],
+    btn: "Apply for Done-For-You", btnClass: "line dk",
+  },
+];
 
 const faqs: [string, string][] = [
-  ["How long before I see stable cost per qualified lead?", "Typically 4–6 weeks. First two weeks are data — we're learning what your audience responds to. Weeks 3–4 we iterate fast on creatives and targeting. By week 5–6, CPL stabilises as we double down on what's converting. Complex sales cycles may take slightly longer."],
-  ["Do you guarantee a specific cost per lead?", "We don't quote a number before seeing your data — that's how agencies overpromise and underdeliver. What we do guarantee is full transparency: every dollar spent, every lead generated, and exactly what we're doing to bring CPL down. Most clients hit their targets within 6–8 weeks."],
-  ["What markets do you run campaigns in?", "Globally. We've run campaigns across North America, Europe, the Middle East, Southeast Asia, and South Asia. Paid media works the same everywhere — what changes is the creative angle, platform mix, and audience behaviour. We adapt accordingly."],
-  ["What if lead quality drops?", "We don't optimise for volume. Every campaign is built around your ideal customer profile — right intent signals, right funnel stage. If quality drops, we trace it to the source — audience targeting, ad creative, or landing page messaging — and fix the actual leak, not just the surface numbers."],
-  ["What kind of businesses do you work best with?", "B2B and B2C brands with a defined offer and a real sales process. If you have a product the market wants and a team that can close, we'll build the pipeline. If the fundamentals aren't there yet, we'll tell you before taking your money."],
-  ["What if we're already working with an agency?", "Good — you'll have benchmarks to compare against. We'll audit your current performance and show you exactly where the gaps are. No pitch deck, no fluff. If we can do better, the numbers will show it."],
-  ["How do we start?", "Book a call, share your current numbers and goals, and we'll tell you honestly if we're the right fit. If yes, onboarding takes 5–7 days. No long-term contracts before we've proven anything."],
+  ["How quickly will I see results?", "Lead volume usually moves in the first 2–4 weeks. Lead quality takes longer, because we need your team's feedback on which leads qualified. Give it 60–90 days to see the full picture."],
+  ["Do you close the leads too?", "No. We generate and qualify leads; your sales or counselling team closes them. That's why we ask for feedback on lead outcomes, and why we're picky about fit."],
+  ["Will my cost per lead go up?", "Sometimes, a little. At RSA it held steady at ~$1.60 while the qualified share went from 10% to 50%. A slightly higher CPL that brings 5x more qualified leads is a much cheaper cost per sale."],
+  ["Which industries do you work with?", "Education and EdTech, pilot and professional training, fintech and lending, real estate, B2B and healthcare. Anywhere a sale starts with a lead and a conversation."],
+  ["Are creatives and landing pages included?", "Creatives, yes: a weekly creative pack is part of every plan. Landing pages and lead capture come with Growth Engine and above. Paid creator fees and shoots are billed separately."],
+  ["Do you run campaigns outside India?", "Yes. International Schooling runs across 9+ countries with us, and we manage accounts in Canada, the USA and other markets with the same system."],
 ];
 
 const markup = `
 <!-- ============ NAV ============ -->
-${nav([["#problem", "The Problem"], ["#flywheel", "A3 System"], ["#results", "Results"], ["#pricing", "Pricing"], ["#faq", "FAQ"]])}
+<div class="nav">
+  <div class="nav-in">
+    <a class="logo" href="/" aria-label="Acquirely home"><img src="/ecommerce/img/01-acquirely-the-science-behind-scale.png" alt="Acquirely — The Science Behind Scale"></a>
+    <nav class="nav-links" aria-label="Page sections">
+      <a href="#results">Case Studies</a>
+      <a href="#flywheel">How It Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-act">${THEME_TOGGLE}<a class="btn blue" ${CTA}>Book a Call</a></div>
+  </div>
+</div>
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <h1><span class="ln">Stop Buying Leads.</span> <span class="ln">Start Building a <span class="grad">Growth System.</span></span></h1>
-      <p class="d-sub">We build the growth engine. You scale.</p>
-      <p class="lede">Most businesses run ads and get form fills that go nowhere. We build the system that turns ad spend into qualified pipeline — predictably, at scale.</p>
+      <span class="audience"><b>For founders</b><span>Education, fintech, real estate &amp; B2B businesses that <strong>sell through leads</strong></span></span>
+      <h1><span class="ln">Learn why <span class="grad">fast-growing lead-gen businesses</span></span> <span class="ln">trust Acquirely to fill their sales pipeline</span></h1>
+      <p class="lede">From principals paying <b>$215 for a conference</b> to fintech registrations at <b>$0.14</b>, we turn Meta and Google Ads into leads your team actually wants to call.</p>
       <div class="hero-cta">
-        <a class="btn" href="${BOOK}" ${ext}>Get Leads Your Sales Team Will Love ${ARROW}</a>
+        <a class="btn" ${CTA}>Book a Lead Quality Audit ${ARROW}</a>
+        <div class="blogos" aria-label="Businesses growing with Acquirely"><span class="bl lg-bl-txt" title="Kashti">Kashti</span><span class="bl" style="background:#FFFFFF" title="RSA Aviation"><img src="/publishers/img/logo-rsa-aviation.png" alt="RSA Aviation"></span><span class="bl wide" style="background:#FFFFFF" title="International Schooling"><img src="/publishers/img/logo-international-schooling.png" alt="International Schooling"></span><span class="bl lg-bl-txt" title="Global Proptech">Global<br>Proptech</span></div>
       </div>
       <div class="trust-row">
-        <span>${TICK}$3.6mn+ Ad Spend Managed</span>
-        <span>${TICK}9+ Regions Active</span>
-        <span>${TICK}75-Day Risk Reversal</span>
+        <span>${TICK}Optimised for qualified leads, not form fills</span>
+        <span>${TICK}Founders on your account</span>
+        <span class="spots"><i></i>Only 3 onboarding spots open this month</span>
       </div>
     </div>
-${hub("Before Acquirely → After Acquirely", "90 Days With The A3 System", [
-  ["Cost Per Lead<small>High &amp; rising before</small>", "$50", "$18", "64% drop"],
-  ["Qualified Rate<small>Unpredictable before</small>", "18%", "29%", "Stable"],
-  ["Cost / Qual. Lead<small>Bleeding spend before</small>", "$278", "$62", "78% drop"],
-])}
+
+    <!-- VIDEO: Wistia lead-gen VSL (media 8aoebjki6e). Clicking the poster swaps in the player. -->
+    <div class="vid" data-video="https://fast.wistia.net/embed/iframe/8aoebjki6e?autoPlay=true&playerColor=2949E5">
+      <div class="vid-bar">Learn how it works</div>
+      <button class="vid-screen" type="button" aria-label="Play: why cheap leads don't close, and what we do instead">
+        <img src="https://fast.wistia.com/embed/medias/8aoebjki6e/swatch" alt="" aria-hidden="true">
+        <span class="vid-card"><b>Why cheap leads don't close, and what we do instead</b><small>The lead-quality system, explained</small></span>
+        <span class="vid-play"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg></span>
+      </button>
+    </div>
   </div>
 </section>
 
-<!-- ============ THE HIDDEN COST ============ -->
-<section class="band white" id="problem">
+<!-- ============ TRUSTED BY (phone mockups) ============ -->
+<section class="trusted" aria-label="Businesses growing with Acquirely">
+  <p class="trusted-h">The lead-gen agency trusted by</p>
+  <div class="ph-viewport">
+    <div class="ph-track">
+      ${phoneSet}
+      ${phoneSet.replace(/<figure class="ph"/g, '<figure class="ph" aria-hidden="true"').repeat(2)}
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULTS (dark) ============ -->
+<section class="band dark">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">The hidden cost</span>
-      <h2>Most Businesses Don't Have a Leads Problem. <span class="grad">They Have a System Problem.</span></h2>
-      <p>You boosted a post. Maybe ran a campaign. Spent a few thousand dollars. Got clicks, maybe some form fills but nothing that turned into real revenue. So you stopped. Sound familiar?</p>
-      <p>The issue isn't Facebook. It's that you were running ads without a structure built to convert. That's exactly what we fix.</p>
+      <h2>These founders thought paid ads only brought junk leads</h2>
+      <p style="color:var(--orange);font-weight:600;margin-top:10px">Here's what happened next.</p>
+      <p style="font-size:14.5px;margin-top:6px">No vanity metrics. Qualified leads, measured by the client's own sales team.</p>
     </div>
-    <div class="split">
-      <div class="card">
-        <h3>What Most Agencies Optimize For</h3>
-        <ul class="x-list">${optimizeFor.map(([, l]) => `<li>${l}</li>`).join("")}</ul>
-      </div>
-      <div class="card">
-        <h3>What Actually Matters</h3>
-        <ul class="d-yes">${actuallyMatters.map(([, l]) => `<li>${l}</li>`).join("")}</ul>
-      </div>
-    </div>
-    <p class="d-callout">When there's no system behind your ads, more budget just means more wasted spend.<br><b>The businesses winning on Meta in 2026 aren't the ones with the biggest budgets they're the ones with the tightest systems.</b></p>
-  </div>
-</section>
-
-<!-- ============ MARKET SHIFT ============ -->
-<section class="band">
-  <div class="wrap">
-    <div class="head">
-      <span class="eyebrow">Market shift</span>
-      <h2>Meta's Algorithm Made Lead Gen Harder. <span class="grad">We Made It Smarter.</span></h2>
-      <p>With updates like Andromeda, Meta's AI now prioritizes creative signals over interest targeting. Lead forms still work - but scaling without structure now kills lead quality.</p>
-    </div>
-    <div class="split">
-      <div class="card">
-        <h3>Most brands kept doing the same:</h3>
-        <ul class="x-list">${marketShift.map((l) => `<li>${l}</li>`).join("")}</ul>
-      </div>
-      <div class="andro">
-        <span class="tag">${icon(P.zap, "currentColor", 16)}The A3 Flywheel</span>
-        <h3>The game changed. We leaned in.</h3>
-        <p>After analyzing $3.6mn+ in lead gen ad spend (across loans, education, aviation, real estate), we built the <b>A3 Flywheel</b> - a lead intelligence engine for the new Meta era.</p>
-      </div>
+    <div class="rcs lg-rcs">
+      ${rc("Propel Curriculum", "B2B · paid conference seats", "150+", "$247K+ revenue on $3.2K spend")}
+      ${rc("Kashti", "Fintech · cost per registration", "$0.14", "~25.7K registrations a month", "$10.75+")}
+      ${rc("RSA Aviation", "High-ticket training · sales-qualified rate", "50%", "Cost per qualified lead $16 → $3.20", "10%")}
+      ${rc("IP Study", "B2B publisher · cost per school lead", "&lt;$1.62", "300+ school leads in under a month")}
+      ${rc("International Schooling", "Global online school · qualified leads", "+40%", "Across 9+ countries, show-rate +25%")}
+      ${rc("Agastya Foundation", "Nonprofit event · paid registrations", "40+", "~$54 each · campaign live")}
     </div>
   </div>
 </section>
 
-<!-- ============ A3 SYSTEM ============ -->
-${a3Section("flywheel", "band white")}
-
-<!-- ============ CLIENT RESULTS ============ -->
+<!-- ============ CASE STUDIES ============ -->
 <section class="band" id="results">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Client results</span>
-      <h2>From "No system" to <span class="grad">Predictable Pipelines.</span></h2>
+      <span class="eyebrow">Case studies</span>
+      <h2>Don't take our word for it. <span class="grad">Look at the numbers.</span></h2>
+      <p>Paid events, field sales, fintech, high-ticket training. Same system in every account, a different problem in each one.</p>
     </div>
-    <div class="cases">${cases.map(caseCard).join("")}
+    <div class="cases">
+      ${cases.map(caseStudy).join("\n")}
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="band white">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Why lead gen stalls</span>
+      <h2>You don't have a lead problem. You have a <span class="grad">lead-quality problem</span>.</h2>
+      <p>Most agencies are paid on cost per lead, so that's what they optimise. The result is a cheap CPL on the report and a sales team calling people who were never going to buy.</p>
+    </div>
+    <div class="split">
+      <div class="card">
+        <h3>Sound familiar?</h3>
+        <ul class="x-list">
+          <li>Cost per lead looks great, but sales says the leads are junk</li>
+          <li>Half the numbers are switched off or never pick up</li>
+          <li>Students, wrong cities or people who can't afford it filling your forms</li>
+          <li>Meta optimising for form fills because it never hears what closed</li>
+          <li>Your sales team calls leads a day late, and they've gone cold</li>
+          <li>Nobody can tell you your real cost per enrolment, demo or sale</li>
+        </ul>
+      </div>
+      <div class="andro">
+        <span class="tag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>What changed with Andromeda</span>
+        <h3>Meta finds whoever you tell it to find. Most accounts tell it "anyone who fills a form."</h3>
+        <p>Creative now decides who sees your ads more than targeting does. If your creative and your optimisation event reward cheap form fills, that's exactly what you'll get, at scale.</p>
+        <p class="lg-callout">RSA's cost per lead never changed. What changed was who the ads were built to attract.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY ACQUIRELY ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Why founders pick us</span>
+      <h2>We're judged on leads you can close, not leads we can count</h2>
+    </div>
+    <div class="reasons">
+      <div class="reveal">
+        <div class="r-head"><span class="num">01</span><h3>Built for qualified leads</h3></div>
+        <div class="r-body">
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg></span><h4>Screened at the source</h4><p>Audiences, questions and creative built to filter out people who can't buy.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/></svg></span><h4>Sales feedback loop</h4><p>Your team's lead outcomes feed back into how we target and what we scale.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span><h4>The right number on the report</h4><p>Cost per qualified lead, not just cost per lead.</p></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="r-head"><span class="num o">02</span><h3>Creative that attracts buyers, not browsers</h3></div>
+        <div class="r-body">
+          <div class="card"><span class="ic o"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F37513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><h4>A new Pack every week</h4><p>Kashti's 99% drop came from one creative insight, not a settings change.</p></div>
+          <div class="card"><span class="ic o"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F37513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span><h4>Speaks to the right buyer</h4><p>Messaging that pre-qualifies, so the wrong people self-select out.</p></div>
+          <div class="card"><span class="ic o"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F37513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h8"/></svg></span><h4>Forms and landing pages</h4><p>Built and tested alongside the ads, because they decide lead quality too.</p></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="r-head"><span class="num">03</span><h3>We carry the risk with you</h3></div>
+        <div class="r-body">
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.5-2"/></svg></span><h4>One fixed monthly fee</h4><p>No per-lead charges, no hidden fees.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/></svg></span><h4>Every decision, shown to you</h4><p>Every scale or cut comes with the numbers behind it.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M21.5 20a6.5 6.5 0 00-4-6"/></svg></span><h4>Founders on your account</h4><p>Not a junior with a template.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLYWHEEL ============ -->
+<section class="band white" id="flywheel">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">How we help you grow</span>
+      <h2>The <span class="grad">A3 Flywheel</span>, built for lead generation</h2>
+      <p>The same weekly system behind our ecommerce results, tuned for one goal: more leads your sales team can close, at a cost that makes sense.</p>
+    </div>
+    <div class="card fly fly-img">
+      <a class="fly-diagram-link" href="/images/a3-flywheel.png" target="_blank" rel="noopener" aria-label="Open the A3 Flywheel diagram full size"><img class="fly-diagram" src="/images/a3-flywheel.png" width="3000" height="1800" loading="lazy" decoding="async" alt="A3 Flywheel account structure: Campaign 1 is a Prospecting CBO running dated Broad Packs of creatives, whose winners are found and scaled; Campaign 2 is a Retention campaign fed by new arrivals and custom offers"></a>
+      <div class="stages">
+        <div class="stage"><span class="code">A1</span><div><h3>Foundation Structure</h3><p>A simple account built around who can actually buy: screened audiences, qualifying questions on the form, and one campaign that tests and scales, instead of five fighting each other.</p></div></div>
+        <div class="stage"><span class="code">A2</span><div><h3>Creative Framework</h3><p>A new creative Pack every week, from competitor research, net-new concepts and iterations of proven winners. Every Pack is written to attract buyers and turn away browsers.</p></div></div>
+        <div class="stage"><span class="code">A3</span><div><h3>Lead-Quality Analysis</h3><p>Every week we look past cost per lead: which ads, audiences and days bring leads your team actually qualifies, and we move budget there.</p></div></div>
+      </div>
+    </div>
+    <div class="lg-inds" aria-label="Industries we work with">
+      <span class="chip">Education &amp; EdTech</span><span class="chip">Pilot &amp; professional training</span><span class="chip">Fintech &amp; lending</span><span class="chip">Real estate</span><span class="chip">B2B &amp; SaaS</span><span class="chip">Healthcare &amp; clinics</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIT ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Who this is for</span>
+      <h2>We say no to most businesses. Here's why.</h2>
+      <p>Lead gen only works when someone follows up. If your sales process isn't ready for more qualified leads yet, we'll tell you on the call.</p>
+    </div>
+    <div class="fit">
+      <div class="card yes">
+        <h3>A good fit if you</h3>
+        <ul>
+          <li>Can invest $1,500+ a month in the system, plus your ad spend</li>
+          <li>Sell something high-ticket, or with long customer value</li>
+          <li>Have a sales or counselling team that calls leads within 24 hours</li>
+          <li>Can tell us which leads qualified and which closed</li>
+          <li>Want qualified pipeline, not a cheaper CPL screenshot</li>
+        </ul>
+      </div>
+      <div class="card no">
+        <h3>Not a fit if you</h3>
+        <ul>
+          <li>Have no one to follow up on leads</li>
+          <li>Judge success on cost per lead alone</li>
+          <li>Are shopping for the cheapest option</li>
+          <li>Expect results in week one without data</li>
+        </ul>
+      </div>
+    </div>
+    <div class="center-cta">
+      <a class="btn" ${CTA}>Yes, I'm Ready. Apply Now ${ARROW}</a>
+      <small>Not sure? Apply anyway. We reply within 24 hours.</small>
     </div>
   </div>
 </section>
@@ -172,119 +471,129 @@ ${a3Section("flywheel", "band white")}
 <section class="band white" id="pricing">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Pricing</span>
-      <h2>Simple, <span class="grad">Outcome-Based</span> Pricing</h2>
-      <p>Month-to-month after your 30-day onboarding. No lock-ins.</p>
+      <span class="eyebrow">Pick your engine</span>
+      <h2>Three ways to fill your pipeline</h2>
+      <p>Pay for the system, not per lead. You keep control of your ad spend; we run everything else.</p>
     </div>
-    <div class="price">${tier("Growth", "$5,000 - $30,000/mo", "$2,500", "USD / month", "≈ $3,000 CAD • Tax additional", "What's Included:", [
-      "A3 System - structured test + scale system",
-      "Structured Meta Management (FB + Instagram)",
-      "Weekly creative variations &amp; UGC editing",
-      "Lead quality monitoring &amp; CPQL optimization",
-      "In-depth weekly performance reports",
-    ])}${tier("Scale", "$30,000+/mo", "10%", "of monthly ad spend", "Billed in USD • CAD available on request", "Everything in Growth, Plus:", [
-      "Weekly creative refresh + scaling decisions based on CPQL thresholds",
-      "Multi-funnel structure: cold, warm &amp; retargeting audiences managed separately",
-      "Micro-analysis: day, hours &amp; region redistribution",
-      "Dedicated Whatsapp group - real time communication",
-      "Monthly review + next 30-day growth plan",
-    ], "Most Popular")}
+    <div class="lg-tiers">
+      ${tiers.map(tier).join("\n")}
     </div>
-    <div class="promise-top">
-      <span class="ic">${SHIELD}</span>
+
+    <div class="lg-allin reveal">
       <div>
-        <b>If we don't improve your lead economics—we work free.</b>
-        <span>Until we hit the target CPQL or lead volume. You exit with a full learning handover.</span>
-        <p class="d-chks"><span>✓ No lock-in contracts</span><span>✓ Full data ownership</span><span>✓ 90-day risk reversal</span></p>
+        <span class="lg-allin-tag">Go all-in · Growth Engine</span>
+        <h3>6 months for the price of 5</h3>
+        <p>Most buying decisions run on monthly and quarterly cycles. Six months spans a full one: months 1–2 we fix the leaks and find winning angles, months 3–6 the pipeline compounds. Founding rate locked, priority onboarding, and the Qualified-Lead Floor from day one.</p>
+      </div>
+      <div class="lg-allin-price">
+        <p><s>$15,000</s> <b>$12,500</b> <small>+ tax</small></p>
+        <span>One month free · rate-locked</span>
+        <a class="btn" ${CTA}>Go All-In ${ARROW}</a>
+      </div>
+    </div>
+
+    <div class="lg-floor">
+      <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+      <div>
+        <h3>The Qualified-Lead Floor <em>Growth Engine &amp; above</em></h3>
+        <p>We agree a monthly number of qualified leads or meetings with you upfront, in writing. If the first 90 days don't clear it, we work free until they do. You carry the ad spend; we carry the risk on our fee. No lock-in after.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ IN-HOUSE COST ============ -->
-${inHouse()}
-
-<!-- ============ NOT FOR EVERYONE ============ -->
-<section class="band">
+<!-- ============ HOW WE WORK (dark) ============ -->
+<section class="band dark">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Not for everyone</span>
-      <h2>We Work With Businesses Ready to Scale. Not Businesses Still Testing the Waters.</h2>
+      <span class="eyebrow">How we work</span>
+      <h2>Built on accountability, not empty promises</h2>
     </div>
-    <div class="fit">
-      <div class="card yes">
-        <h3>This is for you</h3>
-        <ul>
-          <li>You have a real sales process and someone following up on leads</li>
-          <li><span>You're ready to spend seriously on ads — not just test the waters (<strong>real estate teams, mortgage brokers, med spas, professional services, home services</strong>)</span></li>
-          <li>You've run ads before and know the problem isn't the platform</li>
-          <li>You want predictable pipeline, not a one-month spike</li>
-        </ul>
-      </div>
-      <div class="card no">
-        <h3>Not for you</h3>
-        <ul>
-          <li>You want leads fast with no system behind them</li>
-          <li>You don't have a CRM or follow-up process</li>
-          <li>You're looking for the cheapest option in the room</li>
-          <li>You want to try it for a month and see</li>
-        </ul>
-      </div>
+    <div class="promise">
+      <div class="stat"><b style="font-size:18px">A fair 60–90 day window</b><span>Lead quality needs a few sales cycles of feedback. That's when the system shows what it can do.</span></div>
+      <div class="stat"><b style="font-size:18px">Top 1% experts only</b><span>5+ years running ads and $1M+ managed in a year, each. A Meta and a Google specialist on every account.</span></div>
+      <div class="stat"><b style="font-size:18px">The Qualified-Lead Floor</b><span>On Growth Engine and above: a monthly qualified-lead number agreed in writing. Miss it in 90 days and we work free until we hit it.</span></div>
+      <div class="stat"><b style="font-size:18px">Qualified-lead reporting</b><span>Every week: cost per qualified lead, not just cost per lead.</span></div>
     </div>
   </div>
 </section>
 
 <!-- ============ FOUNDERS ============ -->
-<section class="band white">
+<section class="band">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Meet the founders</span>
-      <h2>The Minds Behind Acquirely</h2>
-      <p>Built by Operators - Not Just Agency Owners</p>
+      <span class="eyebrow">Who you'll work with</span>
+      <h2>Built by operators, not just agency owners</h2>
     </div>
-    <div class="team">${person("mausam-arora.jpg", "Mausam Arora", "Founder, Acquirely", "Growth &amp; Strategy Head",
-      "For 11 years, Mausam scaled his own business the hard way — cold calls, trade shows, relationship by relationship. Then one insight changed everything: businesses that make the right people come to them grow differently. Predictably. At scale. That obsession with inbound systems is what Acquirely is built on. He's not an agency guy who learned ads — he's a founder who needed this system, built it, and now builds it for others.",
-      ["Founder-level understanding of what happens before and after the click", "Managed $3mn+ in annual ad spend", "Specialises in funnel strategy, GTM thinking, and scaling systems"],
-      "https://in.linkedin.com/in/mausamarora")}${person("kunal-mondal.jpg", "Kunal Mondal", "Founder, Acquirely", "Performance Marketing Lead",
-      "Kunal has managed over $3mn+ in ad spend across 30+ brands in E-Commerce, EdTech, and Real Estate. He builds acquisition systems that drive predictable revenue, not just traffic. His hands-on approach ensures the A3 Flywheel runs without friction.",
-      ["Hands-on Meta and Growth strategist", "Full-funnel acquisition systems using Google &amp; Meta", "ROAS-focused scaling without wasted spend"],
-      "https://in.linkedin.com/in/kunal-meta-ads")}
+    <div class="team">
+      <div class="card person">
+        <div class="avatar"><img src="/ecommerce/img/mausam-arora.jpg" alt="Mausam Arora"></div>
+        <div>
+          <h3>Mausam Arora</h3>
+          <p class="role">Co-founder · Funnels &amp; GTM</p>
+          <p>12 years building businesses in education: curricula, 300+ books, and distribution to 2,000+ schools. Knows what a qualified lead looks like from the sales side, and builds funnels around it.</p>
+          <a href="https://www.linkedin.com/in/mausamarora/" target="_blank" rel="noopener">${LINKEDIN}LinkedIn</a>
+        </div>
+      </div>
+      <div class="card person">
+        <div class="avatar"><img src="/ecommerce/img/kunal-mandal.jpg" alt="Kunal Mandal"></div>
+        <div>
+          <h3>Kunal Mandal</h3>
+          <p class="role">Co-founder · Meta strategy</p>
+          <p>$3.2M+ managed across 30+ brands in ecommerce and leadgen. A hands-on Meta strategist who runs full-funnel systems across Meta and Google.</p>
+          <a href="https://www.linkedin.com/in/kunal-meta-ads/" target="_blank" rel="noopener">${LINKEDIN}LinkedIn</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="band" id="faq">
+<section class="band white" id="faq">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Got questions?</span>
-      <h2>Frequently Asked Questions</h2>
+      <span class="eyebrow">FAQ</span>
+      <h2>Questions founders ask us</h2>
     </div>
-    ${faqList(faqs)}
+    <div class="faq">
+      ${faqs.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("\n      ")}
+    </div>
   </div>
 </section>
 
 <!-- ============ FINAL CTA ============ -->
-<section class="band white" id="book">
+<section class="band" id="book">
   <div class="wrap">
     <div class="dcard">
       <div>
-        <h2>Ready to Turn "No system" <span class="grad">Into a Predictable Pipeline?</span></h2>
-        <p style="margin-top:12px">If you're a Vancouver-area or North American business that's tried Facebook ads, spent real money, and didn't see the return you expected the system was the problem, not the platform.</p>
-        <p style="margin-top:10px;color:#fff;font-weight:600">Let's fix it.</p>
+        <h2>Cheap leads that never close? <span class="grad">So were theirs.</span></h2>
+        <p style="margin-top:12px">Book a 30-minute Lead Quality Audit. We'll look at your ads, forms and lead data, show you where qualified leads are leaking, and tell you straight whether we can fix it.</p>
+        <ul class="ticks">
+          <li>Free Meta &amp; Google ad account and lead-funnel audit</li>
+          <li>30-minute call, no obligation</li>
+          <li>A straight answer on whether we're the right fit</li>
+        </ul>
       </div>
       <div style="display:grid;align-content:center">
         <span class="eyebrow">Your move</span>
-        <a class="btn blue" href="${BOOK}" ${ext} style="margin-top:16px;width:100%;padding:16px 22px;font-size:16px">Book Your Lead Gen Growth Audit ${ARROW}</a>
-        <p class="d-terms"><span>${TICK}No lock-in</span><span>${TICK}75-day risk reversal</span><span>${TICK}Full transparency</span></p>
+        <h3 style="margin-top:10px">Book your lead quality audit</h3>
+        <a class="btn blue" ${CTA} style="margin-top:22px;width:100%;padding:16px 22px;font-size:16px">Book Your Free Audit! ${ARROW.replace(/18/g, "16")}</a>
+        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>3 spots open this month. We reply within 24 hours.</p>
       </div>
     </div>
   </div>
 </section>
 
-${footer([["#results", "Client Results"], ["#pricing", "Pricing"], ["#faq", "FAQ"]])}
+<footer>
+  <div class="wrap">
+    <div class="fine">
+      <p>© 2026 Acquirely. All rights reserved.</p>
+      <p>This site is not part of the Meta or Facebook website and is not endorsed by Meta Platforms, Inc. Meta and Facebook are trademarks of Meta Platforms, Inc.</p>
+    </div>
+  </div>
+</footer>
 
-${mcta("Book Your Lead Gen Growth Audit")}
+<div class="mcta"><a class="btn" ${CTA}>Book a Lead Quality Audit</a></div>
 `;
 
 export default withImgDims(markup);

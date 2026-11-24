@@ -1,237 +1,435 @@
 import { withImgDims } from "@/lib/img-dims";
-import { BOOK, IMG, ext, ARROW, TICK, SHIELD, P, icon, nav, hub, a3Section, metricTable, quote, inHouse, faqList, person, footer, mcta } from "./shared";
-// Page markup for /ecommerce, rendered by Landing. Images live in public/ecommerce/img.
+import { BOOK } from "@/components/site-chrome/markup";
+import { THEME_TOGGLE } from "./theme";
 
-const problems: [string, string][] = [
-  ["Test creatives randomly", "Creatives are tested without a clear system, leading to inconsistent and unreliable results."],
-  ["Increase budgets emotionally", "Budgets are increased or reduced based on guesswork instead of actual performance data."],
-  ["Pause campaigns too early", "Campaigns are paused too early, before the algorithm has enough data to optimise."],
-  ["Depend on only 1-2 winning creatives", "Relying on just a few winning creatives leads to unstable performance and growth plateaus."],
-];
-
-const benefits: [string, string, string, string, string][] = [
-  [P.bars, "Data Compounds", "Every creative test adds to your brand's intelligence library winning hooks, audience signals, format insights. By Month 6, your campaigns aren't guessing. They're running on 6 months of compounded performance data your competitors don't have.", "10x", "Smarter by Month 6"],
-  [P.trend, "Revenue Compounds", "As the A3 system locks winning creatives and stabilises ROAS, scaling spend stops feeling like a gamble. Budgets increase with confidence because the system has already proven what works revenue grows because efficiency grows first.", "3x", "Average revenue growth in 90 days"],
-  [P.dollar, "CAC Compounds Down", "Every cycle eliminates underperforming creatives and reallocates budget to proven winners. Over time, you're spending less to acquire the same customer not because of luck, but because the system gets tighter every month.", "Consistent", "CAC improvement month over month"],
-];
-
-const moreCases: [string, string, string, [string, string][], string, string][] = [
-  ["Children’s Clothing Brand - Modish", "Children’s clothing · D2C", "Launched campaigns with a ROAS of 1.43, struggling to reach breakeven while scaling daily ad spend.", [
-    ["A1", "Rapid creative testing across offers, visuals, and audience segments."],
-    ["A2", "Stabilised ROAS at breakeven (2.34) then scaled daily budget from $2K to $15K."],
-    ["A3", "Ongoing optimisation based on day‑parting and creative fatigue monitoring."],
-  ], "They didn’t just run ads—they built a testing and scaling engine for us. Our ROAS improved to breakeven and we could finally scale with confidence.", "Founder, Modish"],
-  ["Footwear Brand - No Strain", "Footwear · D2C", "Meta Ads account stuck at 1.57 ROAS for two years, relying mostly on catalogue ads. Scaling attempts failed despite strong product demand.", [
-    ["A1", "Replaced catalogue‑only approach with angle‑based creative testing (comfort, durability, lifestyle)."],
-    ["A2", "Identified winning combinations and scaled budgets while maintaining ROAS."],
-    ["A3", "Continuous budget reallocation to high‑performing creatives and time slots."],
-  ], "Our Meta Ads were stuck for years. Their structured testing approach finally helped us break the plateau and scale.", "Founder, No Strain"],
-];
-
-const moreCase = ([title, chip, problem, steps, q, who]: (typeof moreCases)[number], i: number) => `
-      <article class="card case">
-        <div class="case-data">
-          <div class="k"><small>Problem</small><span>${problem}</span></div>
-          ${quote(`"${q}"`, who)}
-        </div>
-        <div class="case-body">
-          <div class="case-top"><span class="num${i ? " o" : ""}">0${i + 2}</span><span class="chip">${chip}</span></div>
-          <h3>${title}</h3>
-          <p class="eyebrow">Strategy Implemented</p>
-          <ul class="d-steps">${steps.map(([k, v]) => `<li><b>${k}:</b><span>${v}</span></li>`).join("")}</ul>
-          <a class="btn line" href="${BOOK}" ${ext}>Book Your Free Growth Audit →</a>
-        </div>
-      </article>`;
-
-const trust: [string, string, string, string][] = [
-  [P.shield, "#22C55E", "90-Day Guarantee", "We give your campaigns 75–90 days tostabilise and show real performance improvement.  No rushed decisions only data-backed evaluation."],
-  [P.clock, "#3B82F6", "If Results Don't Improve", "If there’s no consistent ROAS growthafter the period—despite proper spendand support—we take responsibility.."],
-  [P.unlock, "#A855F7", "No Lock-In Contract", "No long-term commitments. If it’s not working, you’re freeto walk away no obligations."],
-  [P.trend, "#F59E0B", "Simple Rule", "We either work one extra monthfor free to improve results OR part ways with full campaignlearnings transferred."],
-];
-
-const levers: [string, boolean, string, string][] = [
-  [P.package, false, "Strong Product-Market Fit", "Your product must already be validated with real demand before scaling."],
-  [P.refresh, true, "Continuous Creative Testing", "Winning ads don’t last forever constant testing keeps performance growing."],
-  [P.maximize, false, "Structured Scaling System", "A clear framework (like A3 Flywheel) ensures stable and predictable growth."],
-  [P.bars, true, "Data-Driven Decisions", "Every move is backed by data not guess work. This is where most brands struggle and where westep in."],
-];
-
-const faqs: [string, string][] = [
-  ["How quickly can results be seen?", "Initial winners typically appear within 3–6 weeks, followed by structured scaling."],
-  ["How soon do campaigns launch?", "Campaigns usually go live within 5–7 days after onboarding."],
-  ["What if ROAS targets aren’t met?", "We continuously optimise strategy, creatives, and scaling systems rather than just adjusting ads."],
-  ["Are creatives included?", "We guide the creative strategy and testing framework. Execution can be structured separately."],
-  ["Do you offer SEO or organic social media?", "No. Our focus is purely paid performance marketing and Meta Ads scaling systems."],
-  ["Do you run international campaigns?", "Yes — including US, UAE, and UK markets."],
-];
-
-const tier = (name: string, spend: string, price: string, unit: string, fine: string, inc: string, items: string[], flag = "") => `
-      <div class="card tier">
-        ${flag ? `<span class="flag">${flag}</span>` : ""}
-        <h3>${name}</h3>
-        <span class="eyebrow">For ad spend ${spend}</span>
-        <div class="big grad">${price}<small>${unit}</small></div>
-        <p class="fine-print">${fine}</p>
-        <p class="inc">${inc}</p>
-        <ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>
-        <a class="btn" href="${BOOK}" ${ext}>Book a Funnel Audit ${ARROW}</a>
-      </div>`;
-
+// The acquirely.in/ecommerce page with USD amounts (₹93/$; in-house costs are North American salaries). Page markup for /ecommerce, rendered by EcommerceLanding. Images live in public/ecommerce/img.
 const markup = `
 <!-- ============ NAV ============ -->
-${nav([["#problem", "The Problem"], ["#flywheel", "A3 Flywheel"], ["#results", "Results"], ["#pricing", "Pricing"], ["#faq", "FAQ"]])}
+<div class="nav">
+  <div class="nav-in">
+    <a class="logo" href="/" aria-label="Acquirely home"><img src="/ecommerce/img/01-acquirely-the-science-behind-scale.png" alt="Acquirely — The Science Behind Scale"></a>
+    <nav class="nav-links" aria-label="Page sections">
+      <a href="#results">Case Studies</a>
+      <a href="#flywheel">A3 Flywheel</a>
+      <a href="#playbook">Free Playbook</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-act">${THEME_TOGGLE}<a class="btn blue" href="${BOOK}" target="_blank" rel="noopener nofollow">Book a Call</a></div>
+  </div>
+</div>
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <span class="audience"><b>North America</b><span>Accepting <strong>2 new D2C brands</strong> this month</span></span>
-      <h1><span class="ln">Your Ads Aren't <span class="grad">the Problem.</span></span> <span class="ln">Your System Is.</span></h1>
-      <p class="d-sub">We build the growth engine. You scale.</p>
-      <p class="lede">Most D2C brands run ads, watch ROAS fluctuate, and blame the algorithm. We build the A3 Flywheel — a structured test-scale-optimise system that compounds performance every month.</p>
+      <span class="audience"><b>For founders</b><span>D2C &amp; ecommerce brands doing <strong>$10K–$50K a month</strong></span></span>
+      <h1><span class="ln">Learn why <span class="grad">20+ D2C &amp; ecommerce brands</span> trust</span> <span class="ln">Acquirely to scale their Paid Ads profitably</span></h1>
+      <p class="lede">Our clients have grown revenue up to <b>5x in 90 days</b>, pushed ROAS from <b>2.7 to 4.2</b>, and cut cost per lead by <b>98%</b>, after Meta's Andromeda update broke what used to work.</p>
       <div class="hero-cta">
-        <a class="btn" href="${BOOK}" ${ext}>Get Leads Your Sales Team Will Love ${ARROW}</a>
+        <a class="btn" href="${BOOK}" target="_blank" rel="noopener nofollow">Book a Growth Diagnosis Call <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <div class="blogos" aria-label="Brands scaling with Acquirely"><span class="bl" style="background:#F3EEE8" title="TacTow"><img src="/ecommerce/img/02-tactow.png" alt="TacTow"></span><span class="bl" style="background:#1F3D13" title="Gharaana"><img src="/ecommerce/img/03-gharaana.png" alt="Gharaana"></span><span class="bl" style="background:#FFFFFF" title="Patoola"><img src="/ecommerce/img/04-patoola.png" alt="Patoola"></span><span class="bl" style="background:#FDF7E6" title="Creste Kids"><img src="/ecommerce/img/05-creste-kids.png" alt="Creste Kids"></span><span class="bl" style="background:#FFFFFF" title="Sevora"><img src="/ecommerce/img/06-sevora.png" alt="Sevora"></span><span class="bl" style="background:#FFFFFF" title="Sofara"><img src="/ecommerce/img/07-sofara.png" alt="Sofara"></span><span class="bl more">+14</span></div>
       </div>
       <div class="trust-row">
-        <span>${TICK}$3.6mn+ Ad Spend Managed</span>
-        <span>${TICK}9+ Regions Active</span>
-        <span>${TICK}75-Day Risk Reversal</span>
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Founders on your account</span>
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>$2,500 or 10% of ad spend, whichever is higher</span>
+        <span class="spots"><i></i>Only 3 onboarding spots open this month</span>
       </div>
     </div>
-${hub("Before A3 System → After A3 System", "Gaming Brand • Real Data · 90 Days With The A3 Flywheel", [
-  ["Monthly Rev<small>Plateaued before</small>", "$6K", "$18K", "3x growth"],
-  ["ROAS<small>Couldn't scale before</small>", "2.5X", "4.39X", "75% lift"],
-  ["Conv. Rate<small>Leaking spend before</small>", "1.5%", "4.8%", "3.1x jump"],
-], `
-      <div class="hub-note"><span class="ic">${icon(P.shield, "#4F46E5", 20)}</span><div><b>90-Day Risk Reversal</b><p>No improvement in ROAS or revenue after 90 days? We work the next month <strong>free</strong> — or you exit with full campaign learnings. Zero lock-in.</p></div></div>`)}
-  </div>
-</section>
 
-<!-- ============ THE REAL PROBLEM ============ -->
-<section class="band white" id="problem">
-  <div class="wrap">
-    <div class="head">
-      <span class="eyebrow">The real problem</span>
-      <h2><span class="grad">You Don't Have an Ads Problem.</span> You Have a Growth System Problem.</h2>
-      <p>Most brands approach advertising without a structured scaling framework. Here’s what actually Happens</p>
-    </div>
-    <div class="split">
-      <div class="card">
-        <h3>Sound familiar?</h3>
-        <ul class="x-list">${problems.map(([t, d]) => `<li><span><b>${t}</b><span>${d}</span></span></li>`).join("")}</ul>
-      </div>
-      <div class="andro">
-        <span class="tag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>What changed with Andromeda</span>
-        <h3>Then Meta Changed the Game</h3>
-        <p>With updates like Andromeda, Meta's AI now prioritises creative signals over targeting signals. Interest stacking is weaker. Budget scaling often breaks performance. Yet, most brands kept tweaking audiences while ignoring the real shift: creative-driven performance marketing.</p>
-      </div>
+    <!-- VIDEO: Wistia "E-Commerce October VSL" (media 72oys5y0dy). Clicking the poster swaps in the player. -->
+    <div class="vid" data-video="https://fast.wistia.net/embed/iframe/72oys5y0dy?autoPlay=true&playerColor=2949E5">
+      <div class="vid-bar">Learn how it works</div>
+      <button class="vid-screen" type="button" aria-label="Play: how Acquirely scales paid ads">
+        <img src="/ecommerce/img/08-video-poster.jpg" alt="" aria-hidden="true">
+        <span class="vid-card"><b>How we scale paid ads after Andromeda</b><small>The A3 Flywheel in 8 minutes</small></span>
+        <span class="vid-play"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg></span>
+      </button>
     </div>
   </div>
 </section>
 
-<!-- ============ A3 FLYWHEEL ============ -->
-${a3Section("flywheel", "band")}
+<!-- ============ TRUSTED BY (phone mockups) ============ -->
+<section class="trusted" aria-label="Brands scaling with Acquirely">
+  <p class="trusted-h">The D2C &amp; ecommerce agency trusted by</p>
+  <div class="ph-viewport">
+    <div class="ph-track">
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>tactow.in</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/09-tactow-website-on-mobile.jpg" alt="TacTow website on mobile" loading="lazy"></div></div><figcaption><b>TacTow</b><span class="ph-cat">3D wooden puzzles</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>globalproptech.in</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/29-global-proptech-website-on-mobile.jpg" alt="Global Proptech website on mobile" loading="lazy"></div></div><figcaption><b>Global Proptech</b><span class="ph-cat">Luxury real estate · Gurugram</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>gharaana</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/10-gharaana-website-on-mobile.jpg" alt="Gharaana website on mobile" loading="lazy"></div></div><figcaption><b>Gharaana</b><span class="ph-cat">Furniture</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>internationalschooling.org</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/30-international-schooling-website-on-mobile.jpg" alt="International Schooling website on mobile" loading="lazy"></div></div><figcaption><b>International Schooling</b><span class="ph-cat">Online school</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>patoola</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/11-patoola-website-on-mobile.jpg" alt="Patoola website on mobile" loading="lazy"></div></div><figcaption><b>Patoola</b><span class="ph-cat">Indo-Western fashion</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>silverzone.org</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/36-silverzone-website-on-mobile.jpg" alt="SilverZone website on mobile" loading="lazy"></div></div><figcaption><b>SilverZone</b><span class="ph-cat">School Olympiads</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>nostrain.in</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/32-nostrain-website-on-mobile.jpg" alt="NoStrain website on mobile" loading="lazy"></div></div><figcaption><b>NoStrain</b><span class="ph-cat">Footwear</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>crestekids.com</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/12-creste-kids-website-on-mobile.jpg" alt="Creste Kids website on mobile" loading="lazy"></div></div><figcaption><b>Creste Kids</b><span class="ph-cat">DIY craft kits</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>2ndcareers.com</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/34-2nd-careers-website-on-mobile.jpg" alt="2nd Careers website on mobile" loading="lazy"></div></div><figcaption><b>2nd Careers</b><span class="ph-cat">Career platform</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>kashti.com</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/31-kashti-website-on-mobile.jpg" alt="Kashti website on mobile" loading="lazy"></div></div><figcaption><b>Kashti</b><span class="ph-cat">Fintech app</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>sevora</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/13-sevora-website-on-mobile.jpg" alt="Sevora website on mobile" loading="lazy"></div></div><figcaption><b>Sevora</b><span class="ph-cat">Fashion</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>rightsourceaviation.com</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/33-rsa-aviation-website-on-mobile.jpg" alt="RSA Aviation website on mobile" loading="lazy"></div></div><figcaption><b>RSA Aviation</b><span class="ph-cat">Pilot training academy</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>adasupply.com</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/35-ada-supplies-website-on-mobile.jpg" alt="ADA Supplies website on mobile" loading="lazy"></div></div><figcaption><b>ADA Supplies</b><span class="ph-cat">Safety equipment · USA</span></figcaption></figure>
+      <figure class="ph"><div class="ph-frame"><div class="ph-bar"><span></span><b>sofara</b><span></span></div><div class="ph-screen"><img src="/ecommerce/img/14-sofara-website-on-mobile.jpg" alt="Sofara website on mobile" loading="lazy"></div></div><figcaption><b>Sofara</b><span class="ph-cat">Furniture · Canada</span></figcaption></figure>
+    </div>
+  </div>
+</section>
 
-<!-- ============ WHY THE FLYWHEEL WINS (dark) ============ -->
+<!-- ============ RECEIPTS (dark) ============ -->
 <section class="band dark">
   <div class="wrap">
     <div class="head">
-      <h2>Why the Flywheel Wins Every Time</h2>
-      <p>Each phase amplifies the next. The longer it spins, the harder it is to stop.</p>
+      <h2>These founders thought they had hit a ceiling on paid ads</h2>
+      <p style="color:var(--orange);font-weight:600;margin-top:10px">Here's what happened next.</p>
+      <p style="font-size:14.5px;margin-top:6px">No vanity metrics. Just real numbers from real accounts.</p>
     </div>
-    <div class="stats three">${benefits.map(([ic, t, d, v, l]) => `
-      <div class="stat reveal">${icon(ic, "#F97316", 24)}<h3>${t}</h3><p>${d}</p><div class="d-val"><b>${v}</b><span>${l}</span></div></div>`).join("")}
-    </div>
+    <div class="rcs"><div class="rc reveal"><div class="rc-who"><b>TacTow</b><small>D2C puzzles · monthly revenue</small></div><div class="rc-mv"><s>$8.6K →</s><b>$43K</b></div><span class="rc-t">90 days</span></div><div class="rc reveal"><div class="rc-who"><b>Gharaana</b><small>Furniture · monthly revenue</small></div><div class="rc-mv"><s>$21.5K →</s><b>$61K</b></div><span class="rc-t">5 months</span></div><div class="rc reveal"><div class="rc-who"><b>Patoola</b><small>Fashion · monthly revenue</small></div><div class="rc-mv"><s>$3,760 →</s><b>$10,750</b></div><span class="rc-t">2 months</span></div><div class="rc reveal"><div class="rc-who"><b>Creste Kids</b><small>DIY kits · ROAS</small></div><div class="rc-mv"><s>2.07 →</s><b>3.65</b></div><span class="rc-t">2 months</span></div></div>
   </div>
 </section>
 
-<!-- ============ RESULTS ============ -->
+<!-- ============ CASE STUDIES ============ -->
 <section class="band" id="results">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Real client. Real numbers. Real proof.</span>
-      <h2>Real Results from the <span class="grad">A3 Flywheel Model</span></h2>
+      <span class="eyebrow">Case studies</span>
+      <h2>Don't take our word for it. <span class="grad">Look at the numbers.</span></h2>
+      <p>Same system in every account. A different bottleneck in each one.</p>
     </div>
+
     <div class="cases">
+      <!-- TacTow -->
       <article class="card case reveal">
         <div class="case-data">
-          <div class="k"><small>Result</small><b class="grad">3x</b><span>Monthly revenue, $6K → $18K in 90 days</span></div>
+          <div class="k"><small>Result</small><b class="grad">5x</b><span>Monthly revenue in 90 days</span></div>
           <div class="proofs">
-            <figure class="proof-shot"><video src="/video.mp4" poster="${IMG}/meta-ads-manager.png" autoplay loop muted playsinline controls preload="none"></video><figcaption><b>Meta Ads Manager</b> Gaming brand account</figcaption></figure>
-            <figure class="proof-shot"><img src="${IMG}/shopify-dashboard.png" alt="Shopify dashboard for the gaming brand" loading="lazy"><figcaption><b>Shopify Dashboard</b> Gaming brand store</figcaption></figure>
+            <figure class="proof-shot"><img src="/ecommerce/img/15-tactow-shopify-dashboard-26-1-lakh-total.jpg" alt="TacTow Shopify dashboard: about $28K total sales, Sep 13 to Oct 13 2026, up 53%" loading="lazy"><figcaption><b>Shopify</b> Total sales, last 30 days, vs previous period</figcaption></figure>
+            <figure class="proof-shot"><img src="/ecommerce/img/16-tactow-meta-ads-manager-768-website-purc.jpg" alt="TacTow Meta Ads Manager: 768 website purchases, about $24.4K purchase value, 3.83 ROAS, last 30 days" loading="lazy"><figcaption><b>Meta Ads Manager</b> Last 30 days, 13 Sep – 12 Oct 2026</figcaption></figure>
+          <p class="proof-hint">Tap a screenshot to enlarge</p>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="case-top"><span class="num">01</span><span class="chip">Toys &amp; puzzles · D2C</span></div>
+          <h3>From $8.6K to $43K per month in 90 days</h3>
+          <dl class="facts">
+            <div><dt>Client</dt><dd>TacTow, 3D wooden mechanical puzzles made in Bengaluru</dd></div>
+            <div><dt>Starting point</dt><dd>$8.6K/month, built by the founder on his own</dd></div>
+            <div><dt>90-day result</dt><dd><b>$43K/month. 5x revenue in one quarter.</b></dd></div>
+          </dl>
+          <p class="story">We first worked with TacTow's founder in 2025 on his earlier gaming brand, Old School Station, until a factory fire shut it down. When he launched TacTow and was ready to scale fast, he came back. We consolidated the ad accounts, built spend around the proven hero product, and ran the A3 Flywheel: one Prospecting CBO, a new creative Pack every week, and a creative engine that turned a single winning creator ad into a steady stream of iterations.</p>
+          <a class="btn line" href="${BOOK}" target="_blank" rel="noopener nofollow">Get the same diagnosis →</a>
+        </div>
+      </article>
+
+      <!-- ADA Supplies -->
+      <article class="card case reveal">
+        <div class="case-data">
+          <div class="k"><small>Result</small><b class="grad">7x</b><span>Monthly online revenue in 90 days</span></div>
+          <div class="proofs">
+            <figure class="proof-shot"><img src="/ecommerce/img/35-ada-supplies-revenue-dashboard-90-days.jpg" alt="ADA Supplies revenue dashboard, last 90 days: $12,441 gross revenue, up 183%; $12,088 net after refunds and card fees" loading="lazy"><figcaption><b>Store dashboard</b> Gross revenue, last 90 days, up 183%</figcaption></figure>
             <p class="proof-hint">Tap the screenshot to enlarge</p>
           </div>
         </div>
         <div class="case-body">
-          <div class="case-top"><span class="num">01</span><span class="chip">Gaming · D2C</span></div>
-          <h3>Case Study 1: Gaming Brand</h3>
-          <dl class="facts" style="grid-template-columns:1fr 1fr">
-            <div><dt>Problem</dt><dd>Revenue stuck at $6K/month with ROAS 2.5x - couldn't scale without breaking performance</dd></div>
-            <div><dt>Strategy Implemented</dt><dd><b>A3 Flywheel Model + Structured Creative Testing Engine</b></dd></div>
+          <div class="case-top"><span class="num">02</span><span class="chip">Safety equipment · Ecommerce, USA</span></div>
+          <h3>From $1K to $7K a month in 90 days</h3>
+          <dl class="facts">
+            <div><dt>Client</dt><dd>ADA Supplies, a US safety equipment supplier trusted by Boeing, Northrop Grumman and government buyers</dd></div>
+            <div><dt>Starting point</dt><dd>Strong offline, but stuck at $1,000 a month online</dd></div>
+            <div><dt>90-day result</dt><dd><b>$7,000 a month online. A 7x jump.</b></dd></div>
           </dl>
-          <p class="eyebrow">Results After 90 Days</p>
-${metricTable("After 90 Days", [["Revenue", "$6K/mo", "$18K/mo (+3x)"], ["ROAS", "2.5x", "4.39x (+75%)"], ["Cost Per Click", "Baseline", "Down 58%"], ["Conv. Rate", "1.5%", "4.8% (+3.1x)"]])}
-          ${quote('"Finally an agency that thinks in systems, not campaigns. We stopped guessing and started scaling."', "Founder, Gaming Brand")}
-          <a class="btn line" href="${BOOK}" ${ext}>Book Your Free Growth Audit →</a>
+          <p class="story">Offline, the business was strong. Online, it was stuck at just $1,000 a month. In June 2026, we built a combined Meta Ads and Google Ads system: Google to capture buyers already searching for safety gear, Meta to reach new ones. In 90 days, online revenue grew to $7,000 a month.</p>
+          <a class="btn line" href="${BOOK}" target="_blank" rel="noopener nofollow">Get the same diagnosis →</a>
         </div>
       </article>
+
+      <!-- Gharaana -->
+      <article class="card case reveal">
+        <div class="case-data">
+          <div class="k"><small>Result</small><b class="grad">2.30 → 4.04</b><span>Purchase ROAS, August vs last 30 days</span></div>
+          <div class="proofs">
+            <figure class="proof-shot ba-shot"><img src="/ecommerce/img/17-gharaana-meta-ads-manager-before-and-aft.jpg" alt="Gharaana Meta Ads Manager before and after: account average purchase ROAS 2.30 in August 2026, 4.04 in the last 30 days, all 39 campaigns" loading="lazy"><figcaption><b>Meta Ads Manager</b> Purchase ROAS 2.30 → 4.04</figcaption></figure>
+            <figure class="proof-shot"><img src="/ecommerce/img/18-gharaana-shopify-10-6-lakh-total-sales-i.jpg" alt="Gharaana Shopify: about $11.4K total sales in the last 7 days, up 28%; sessions up 52%; orders up 30%" loading="lazy"><figcaption><b>Shopify</b> Last 7 days vs previous period</figcaption></figure>
+            <p class="proof-hint">Tap a screenshot to enlarge</p>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="case-top"><span class="num">03</span><span class="chip">Furniture · Ecommerce</span></div>
+          <h3>"We thought open targeting never works. We were wrong."</h3>
+          <dl class="facts">
+            <div><dt>Client</dt><dd>Gharaana, furniture ecommerce</dd></div>
+            <div><dt>Starting point</dt><dd>2.30 account ROAS in August, after Andromeda flattened results</dd></div>
+            <div><dt>Last 30 days</dt><dd><b>ROAS 4.04 account-wide, 4.66 on Prospecting_A3.</b></dd></div>
+          </dl>
+          <p class="story">Gharaana had a strong year on Meta until the Andromeda update flattened it. When they onboarded in May 2026, the founder was certain open targeting would fail. We ran the A3 Flywheel anyway: broad audiences inside one Prospecting CBO, a fresh creative Pack every week, and a creative engine built on market research, net-new concepts and iterations of proven winners. The right structure beat interest targeting.</p>
+          <a class="btn line" href="${BOOK}" target="_blank" rel="noopener nofollow">Get the same diagnosis →</a>
+        </div>
+      </article>
+
+      <!-- Patoola -->
+      <article class="card case reveal">
+        <div class="case-data">
+          <div class="k"><small>Result</small><b class="grad">2.9x</b><span>Monthly revenue in 2 months, ROAS up</span></div>
+          <div class="proofs">
+            <figure class="proof-shot ba-shot"><img src="/ecommerce/img/19-patoola-meta-ads-manager-before-and-afte.jpg" alt="Patoola Meta Ads Manager before and after: account average purchase ROAS 3.6 in August 2026, 4.02 in the last 30 days, all campaigns" loading="lazy"><figcaption><b>Meta Ads Manager</b> Purchase ROAS 3.6 → 4.02</figcaption></figure>
+            <p class="proof-hint">Tap the screenshot to enlarge</p>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="case-top"><span class="num">04</span><span class="chip">Fashion · D2C</span></div>
+          <h3>From $3,760 to $10,750 a month in two months</h3>
+          <dl class="facts">
+            <div><dt>Client</dt><dd>Patoola, a Bengaluru Indo-Western fashion label for modern women</dd></div>
+            <div><dt>Starting point</dt><dd>$3,760/month at 3.6 ROAS, with every ad creator-led</dd></div>
+            <div><dt>2-month result</dt><dd><b>$10,750/month, nearly 3x. ROAS up to 4.02.</b></dd></div>
+          </dl>
+          <p class="story">Every ad in Patoola's account was creator-led, and that capped how far it could scale. We ran the A3 Flywheel and added a new creative direction: founder-led ads that tell customers the story and the person behind the label, alongside the creator content. With a fresh Pack tested every week and winners scaled inside one Prospecting CBO, revenue nearly tripled in two months, and ROAS went up, not down.</p>
+          <a class="btn line" href="${BOOK}" target="_blank" rel="noopener nofollow">Get the same diagnosis →</a>
+        </div>
+      </article>
+
+      <!-- Creste -->
+      <article class="card case reveal">
+        <div class="case-data">
+          <div class="k"><small>Result</small><b class="grad">2.07 → 3.65</b><span>Purchase ROAS, all-time account average vs last 30 days</span></div>
+          <div class="proofs">
+            <figure class="proof-shot ba-shot"><img src="/ecommerce/img/20-creste-meta-ads-manager-before-and-after.jpg" alt="Creste Meta Ads Manager before and after: all-time account average purchase ROAS 2.07 across 96 campaigns, 3.65 in the last 30 days with Acquirely's Dussehra campaigns" loading="lazy"><figcaption><b>Meta Ads Manager</b> Purchase ROAS 2.07 → 3.65</figcaption></figure>
+            <figure class="proof-shot"><img src="/ecommerce/img/21-creste-shopify-dashboard-4-47-lakh-total.jpg" alt="Creste Shopify dashboard: about $4.8K total sales in the last 90 days, up 7.7K percent vs the previous 90 days; 202 orders" loading="lazy"><figcaption><b>Shopify</b> Last 90 days, 15 Jul – 13 Oct 2026, vs previous 90 days</figcaption></figure>
+            <p class="proof-hint">Tap a screenshot to enlarge</p>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="case-top"><span class="num o">05</span><span class="chip">Kids DIY kits · D2C</span></div>
+          <h3>Stuck at 2.07 ROAS. 3.65 in the last 30 days.</h3>
+          <dl class="facts">
+            <div><dt>Client</dt><dd>Creste Kids, DIY craft kits for children</dd></div>
+            <div><dt>Starting point</dt><dd>2.07 all-time average ROAS across 96 campaigns</dd></div>
+            <div><dt>Result</dt><dd><b>3.65 ROAS across the account in the last 30 days. Dussehra kits sold out.</b></dd></div>
+          </dl>
+          <p class="story">Two years of tweaking campaign settings hadn't moved Creste. We diagnosed the real bottleneck as creative, set up a creator pipeline for a steady supply of authentic content, and ran it through the A3 Flywheel: a new creative Pack every week in one Prospecting CBO, winners iterated, and past buyers handled separately in a Retention campaign.</p>
+          <a class="btn line" href="${BOOK}" target="_blank" rel="noopener nofollow">Get the same diagnosis →</a>
+        </div>
+      </article>
+
     </div>
-    <details class="d-more">
-      <summary><span><span class="when-closed">Explore More Case Studies</span><span class="when-open">Hide Case Studies</span></span></summary>
-      <div class="cases">${moreCases.map(moreCase).join("")}
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="band white">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Why brands stall</span>
+      <h2>You don't have an ads problem. You have a system problem.</h2>
+      <p>Most D2C brands get stuck between $3K and $20K a month. The product is fine. The ads are fine. What's missing is a repeatable way to find winners, scale them, and replace them before they fatigue.</p>
+    </div>
+    <div class="split">
+      <div class="card">
+        <h3>Sound familiar?</h3>
+        <ul class="x-list">
+          <li>Creatives tested at random, with no hypothesis behind them</li>
+          <li>Campaigns paused before they've had a fair read</li>
+          <li>Budgets raised on a good day and cut on a bad one</li>
+          <li>The whole account riding on one or two ageing winners</li>
+          <li>An agency that reports numbers but never learns from them</li>
+          <li>ROAS that swings 30% week to week and nobody can say why</li>
+        </ul>
       </div>
-    </details>
+      <div class="andro">
+        <span class="tag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>What changed with Andromeda</span>
+        <h3>Meta now groups your ads by concept before the auction</h3>
+        <p>Forty ads built on three ideas look like three ads to the algorithm. Interest stacking matters less, creative matters more, and fast budget jumps break learning.</p>
+        <p>Most accounts are still optimising audiences. Gharaana's was too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY ACQUIRELY ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Why founders pick us</span>
+      <h2>We're not another agency that "runs your ads"</h2>
+    </div>
+    <div class="reasons">
+      <div class="reveal">
+        <div class="r-head"><span class="num">01</span><h3>One system, every account</h3></div>
+        <div class="r-body">
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v4h-4"/></svg></span><h4>Runs weekly</h4><p>Structure, creative, micro analysis, repeat. The A3 Flywheel behind every result on this page.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><h4>Tested across 20+ accounts</h4><p>Built from what actually worked after Andromeda, not from theory.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span><h4>Data, not mood</h4><p>Scaling decisions follow the numbers, not the mood in the group chat.</p></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="r-head"><span class="num o">02</span><h3>Creative is the engine, so we built one</h3></div>
+        <div class="r-body">
+          <div class="card"><span class="ic o"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F37513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><h4>A new Pack every week</h4><p>Creste, Patoola and TacTow all turned on creative, not campaign settings.</p></div>
+          <div class="card"><span class="ic o"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F37513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span><h4>Research, not colour swaps</h4><p>Market research and net-new concepts alongside iterations of proven winners.</p></div>
+          <div class="card"><span class="ic o"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F37513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M21.5 20a6.5 6.5 0 00-4-6"/></svg></span><h4>Creators included</h4><p>Creator pipeline and influencer management are part of the fee.</p></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="r-head"><span class="num">03</span><h3>We get paid when you grow</h3></div>
+        <div class="r-body">
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.5-2"/></svg></span><h4>$2,500 or 10% of ad spend</h4><p>Whichever is higher. No hidden fees.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/></svg></span><h4>Every decision, shown to you</h4><p>Every scale or cut decision comes with the numbers behind it.</p></div>
+          <div class="card"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2B7FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span><h4>Founders on your account</h4><p>Not a junior with a template.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLYWHEEL ============ -->
+<section class="band white" id="flywheel">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">How we help you grow</span>
+      <h2>The A3 Flywheel: how we scale Meta Ads after Andromeda</h2>
+      <p>When Andromeda landed, interest targeting stopped working across most of the 20+ ad accounts we managed. So we rebuilt how we run them: one structure, three systems, run every week.</p>
+    </div>
+    <div class="card fly fly-img">
+      <a class="fly-diagram-link" href="/images/a3-flywheel.png" target="_blank" rel="noopener" aria-label="Open the A3 Flywheel diagram full size"><img class="fly-diagram" src="/images/a3-flywheel.png" width="3000" height="1800" loading="lazy" decoding="async" alt="A3 Flywheel account structure: Campaign 1 is a Prospecting CBO running dated Broad Packs of creatives, whose winners are found and scaled; Campaign 2 is a Retention campaign fed by new arrivals and custom offers"></a>
+      <div class="stages">
+        <div class="stage"><span class="code">A1</span><div><h3>Foundation Structure</h3><p>Two campaigns, not five. One Prospecting CBO that tests and scales new-customer ads, and one Retention campaign for past buyers. No audience overlap, no internal bidding war.</p></div></div>
+        <div class="stage"><span class="code">A2</span><div><h3>Creative Framework</h3><p>A new creative Pack every week, from three systems: competitor research, net-new concepts, and iterations of proven winners. Learn from the market, create new, improve what works.</p></div></div>
+        <div class="stage"><span class="code">A3</span><div><h3>Micro Analysis</h3><p>Meta doesn't perform the same every day of the week, so your budget shouldn't either. With 90 days of your data, we move spend away from weak days and into your strongest ones.</p></div></div>
+      </div>
+    </div>
+
+    <div class="dcard" id="playbook" style="margin-top:40px">
+      <div>
+        <span class="eyebrow">Free playbook</span>
+        <h2 style="margin-top:10px">Get the full A3 Flywheel playbook</h2>
+        <p style="margin-top:10px">The exact rules we run in client accounts.</p>
+        <ul class="ticks">
+          <li><span><b>Why your new creatives get almost no spend</b>, and the one ad-set setting that gives every Pack a fair 7-day test.</span></li>
+          <li><span><b>Why we killed our own Scale campaign</b>, and where scaling happens now instead.</span></li>
+          <li><span><b>How to stop spending the same budget every day</b> when some days return 5x and others 2.5x.</span></li>
+          <li><span><b>What to do when your best ad starts dying.</b> Pausing it is usually the mistake that crashes ROAS.</span></li>
+        </ul>
+      </div>
+      <div class="dform pb-cta">
+        <span class="eyebrow">Free · 2-minute form</span>
+        <h3>Send me the playbook</h3>
+        <p>Tell us where to send it and your monthly ad spend. The playbook lands in your inbox and on WhatsApp.</p>
+        <a class="btn blue" href="https://forms.zoho.in/acquirely/form/A3Playbook" target="_blank" rel="noopener nofollow">Send Me the Playbook <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>No spam. We never share your details.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WALL OF WINS ============ -->
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Wall of wins</span>
+      <h2>Straight from Ads Manager and client chats</h2>
+      <p>Screenshots from client accounts and chats. Cropped for privacy. Every number is exactly as the platform shows it.</p>
+    </div>
+    <div class="wins">
+      <figure class="win"><img src="/ecommerce/img/22-meta-ads-app-kenzai-puzzles-prospecting.jpg" alt="Meta Ads app: Kenzai Puzzles prospecting campaign with 954 website purchases" loading="lazy"><figcaption><span>TacTow · formerly Kenzai Puzzles</span>954 purchases from one prospecting campaign.</figcaption></figure>
+      <figure class="win"><img src="/ecommerce/img/23-whatsapp-creste-team-says-dussehra-kits.jpg" alt="WhatsApp: Creste team says Dussehra kits almost sold out, asks to pause ads" loading="lazy"><figcaption><span>Creste Kids</span>Sold out before Dussehra. The client asked us to pause.</figcaption></figure>
+      <figure class="win"><img src="/ecommerce/img/24-meta-ads-app-patoola-prospecting-campaig.jpg" alt="Meta Ads app: Patoola prospecting campaign with 48 website purchases" loading="lazy"><figcaption><span>Patoola</span>48 purchases from a single prospecting campaign.</figcaption></figure>
+      <figure class="win"><img src="/ecommerce/img/25-meta-ads-app-tactow-ad-sets-broad-pack-2.jpg" alt="Meta Ads app: TacTow ad sets — Broad Pack 2 with 105 purchases, Winner Creatives with 35" loading="lazy"><figcaption><span>TacTow · ad sets</span>Every weekly creative Pack tracked to purchases, not clicks.</figcaption></figure>
+      <figure class="win"><img src="/ecommerce/img/26-whatsapp-testimonial-from-karthik-recomm.jpg" alt="WhatsApp testimonial from Karthik recommending Kunal and the Acquirely team" loading="lazy"><figcaption><span>Karthik · founder, Old School Station</span>"Consistent results at scale. Highly recommend."</figcaption></figure>
+      <figure class="win"><img src="/ecommerce/img/27-meta-ads-app-gharaana-prospecting-and-re.jpg" alt="Meta Ads app: Gharaana prospecting and retargeting campaigns, both active" loading="lazy"><figcaption><span>Gharaana</span>High-ticket furniture, sold through prospecting and retargeting.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIT ============ -->
+<section class="band white">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Who this is for</span>
+      <h2>We say no to most brands. Here's why.</h2>
+      <p>The Flywheel needs fuel: a product people already buy and enough spend to learn from. If that's not you yet, we'll tell you on the call.</p>
+    </div>
+    <div class="fit">
+      <div class="card yes">
+        <h3>A good fit if you</h3>
+        <ul>
+          <li>Already spend on Meta &amp; Google Ads every month</li>
+          <li>Have a product that already sells</li>
+          <li>Hit a ceiling when you try to scale</li>
+          <li>See ROAS swing with no clear reason</li>
+          <li>Want a system, not just someone to press buttons</li>
+        </ul>
+      </div>
+      <div class="card no">
+        <h3>Not a fit if you</h3>
+        <ul>
+          <li>Are still launching or testing product-market fit</li>
+          <li>Are shopping for the cheapest option</li>
+          <li>Aren't ready to scale spend when it works</li>
+          <li>Expect results in week one without data</li>
+        </ul>
+      </div>
+    </div>
+    <div class="center-cta">
+      <a class="btn" href="${BOOK}" target="_blank" rel="noopener nofollow">Yes, I'm Ready. Apply Now <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <small>Not sure? Apply anyway. We reply within 24 hours.</small>
+    </div>
   </div>
 </section>
 
 <!-- ============ PRICING ============ -->
-<section class="band white" id="pricing">
+<section class="band" id="pricing">
   <div class="wrap">
     <div class="head">
       <span class="eyebrow">Pricing</span>
-      <h2>Simple, <span class="grad">Outcome-Based</span> Pricing</h2>
-      <p>Month-to-month after your 90-day onboarding. No lock-ins.</p>
+      <h2>Transparent pricing that <span class="grad">grows only when you do</span></h2>
     </div>
-    <div class="price">${tier("Growth", "$5,000 – $30,000/mo", "$2,500", "USD / month", "≈ $3,000 CAD • Tax additional", "What's Included", [
-      "A3 Flywheel — structured test → scale system",
-      "Meta campaign management (FB + Instagram)",
-      "Weekly creative variations + UGC editing",
-      "ROAS, CPP, CPM Optimisation",
-      "Bi-weekly performance reports",
-    ])}${tier("Scale", "$30,000+/mo", "10%", "of monthly ad spend", "Billed in USD • CAD available on request", "Everything In Growth, Plus", [
-      "Weekly creative refresh + scaling decisions based on CPQL thresholds",
-      "Multi-funnel structure: cold, warm &amp; retargeting audiences managed separately",
-      "Micro-analysis: day, hour &amp; region redistribution",
-      "Dedicated Whatsapp group - real time communication",
-      "Monthly review + next 30-day growth plan",
-    ], "Most Popular")}
-    </div>
-    <p class="d-terms"><span>${TICK}Month-to-month after 90-day onboarding</span><span>${TICK}No setup fees</span><span>${TICK}Full data handover if you exit</span></p>
-    <div class="promise-top">
-      <span class="ic">${SHIELD}</span>
-      <div>
-        <b>If we don't improve your lead economics — we work free.</b>
-        <span>After the 90-day stabilisation period, if there’s no clear improvement in ROAS or revenue at consistent CAC, we work the next month at <strong>zero management fee</strong> — or you exit with a full campaign handover and zero lock-in.</span>
-        <p class="d-chks"><span>✓ No lock-in contracts</span><span>✓ Full data ownership</span><span>✓ 90-day risk reversal</span></p>
+    <div class="price" style="align-items:start">
+      <div class="card tier">
+        <span class="eyebrow">$2,500 or 10% of ad spend, whichever is higher</span>
+        <div class="big grad">10%</div>
+        <p class="sub">of monthly ad spend, $2,500 minimum. Nothing hidden.</p>
+        <ul>
+          <li>Meta campaign strategy and management on the A3 Flywheel</li>
+          <li>Google Search, PMax, YouTube &amp; LinkedIn Ads</li>
+          <li>A new creative Pack every week</li>
+          <li>Influencer management</li>
+          <li>Daily monitoring and weekly optimisation</li>
+        </ul>
+        <details class="tier-more"><summary>See everything included</summary><dl>
+          <div><dt>Meta Ads on the A3 Flywheel</dt><dd>Prospecting and retention campaigns, launched and managed for you.</dd></div>
+          <div><dt>Google Ads (Search, PMax &amp; YouTube)</dt><dd>Meta creates demand; Google captures it the moment someone searches.</dd></div>
+          <div><dt>LinkedIn Ads</dt><dd>Reach decision-makers by job title and company.</dd></div>
+          <div><dt>A new creative Pack every week</dt><dd>Competitor research, net-new concepts and iterations of proven winners.</dd></div>
+          <div><dt>Influencer management</dt><dd>We run the creator pipeline. Paid creator fees are billed separately.</dd></div>
+          <div><dt>Micro Analysis</dt><dd>90 days of your data decides which days get more budget.</dd></div>
+          <div><dt>Daily monitoring + weekly optimisation</dt><dd>Every scale or cut comes with the numbers behind it.</dd></div>
+        </dl></details>
+        <a class="btn" href="${BOOK}" target="_blank" rel="noopener nofollow">Book a Growth Call</a>
+      </div>
+      <div class="card inhouse">
+        <h3>What the same team costs in-house</h3>
+        <table>
+          <tr><td>Meta performance marketer</td><td>~$6,500</td></tr>
+          <tr><td>Google Ads manager</td><td>~$6,500</td></tr>
+          <tr><td>Content strategist</td><td>~$5,000</td></tr>
+          <tr><td>Video editor</td><td>~$3,500</td></tr>
+          <tr><td>Graphic designer</td><td>~$3,500</td></tr>
+          <tr class="total"><td>Monthly total</td><td>~$25,000+</td></tr>
+        </table>
+        <p>And that's before a proven scaling framework or a creative testing system. The even more expensive option is an agency that spends your budget and never learns from it.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ IN-HOUSE COST ============ -->
-${inHouse()}
-
-<!-- ============ ACCOUNTABILITY (dark) ============ -->
+<!-- ============ HOW WE WORK (dark) ============ -->
 <section class="band dark">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Zero risk commitment</span>
-      <h2>Built on Accountability <span class="grad">Not Empty Promises</span></h2>
-      <p>We don't offer unrealistic guarantees. But we do take full responsibility for results.</p>
+      <span class="eyebrow">How we work</span>
+      <h2>Built on accountability, not empty promises</h2>
     </div>
-    <div class="promise">${trust.map(([ic, c, t, d]) => `
-      <div class="stat reveal"><span class="ic">${icon(ic, c, 20)}</span><b style="font-size:18px">${t}</b><span>${d}</span></div>`).join("")}
+    <div class="promise">
+      <div class="stat"><b style="font-size:18px">A fair 75–90 day window</b><span>Micro Analysis needs 90 days of your data. That's when the system shows what it can do.</span></div>
+      <div class="stat"><b style="font-size:18px">Top 1% experts only</b><span>5+ years running ads and $1M+ managed in a year, each. A Meta and a Google specialist on every account.</span></div>
+      <div class="stat"><b style="font-size:18px">Fees tied to growth</b><span>$2,500 or 10% of your ad spend, whichever is higher. We earn more only when your spend scales profitably.</span></div>
+      <div class="stat"><b style="font-size:18px">Data-backed decisions</b><span>Every scale or cut has a number behind it you can see.</span></div>
     </div>
   </div>
 </section>
@@ -240,17 +438,38 @@ ${inHouse()}
 <section class="band">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Meet the founders</span>
-      <h2>The Minds Behind Acquirely</h2>
-      <p>Two seasoned strategists with decades of combined experience building brands that dominate their markets.</p>
+      <span class="eyebrow">Who you'll work with</span>
+      <h2>Built by operators, not just agency owners</h2>
     </div>
-    <div class="team">${person("mausam-arora.jpg", "Mausam Arora", "Founder, Acquirely", "Growth &amp; Strategy Head, UMG",
-      "For 11 years, Mausam scaled his own business the hard way — cold calls, trade shows, relationship by relationship. Then one insight changed everything: businesses that make the right people come to them grow differently. Predictably. At scale. That obsession with inbound systems is what Acquirely is built on. He's not an agency guy who learned ads — he's a founder who needed this system, built it, and now builds it for others.",
-      ["Founder-level understanding of what happens before and after the click", "Managed $3.5M+ in annual ad spend", "Specialises in funnel strategy, GTM thinking, and scaling systems"],
-      "https://in.linkedin.com/in/mausamarora")}${person("kunal-mondal.jpg", "Kunal Mondal", "Founder, Acquirely", "Performance Marketing Specialist",
-      "Kunal has managed over $3.5M in ad spend across 30+ brands in E-Commerce, EdTech, and Real Estate. He builds acquisition systems that drive predictable revenue, not just traffic. His hands-on approach ensures the A3 Flywheel runs without friction.",
-      ["Hands-on Meta Ads strategist", "Full-funnel acquisition systems using Google &amp; Meta", "ROAS-focused scaling without wasted spend"],
-      "https://in.linkedin.com/in/kunal-meta-ads")}
+    <div class="team">
+      <div class="card person">
+        <div class="avatar"><img src="/ecommerce/img/mausam-arora.jpg" alt="Mausam Arora" loading="lazy"></div>
+        <div>
+          <h3>Mausam Arora</h3>
+          <p class="role">Co-founder · Funnels &amp; GTM</p>
+          <p>12 years building businesses in education: curricula, 300+ books, and distribution to 2,000+ schools. Brings go-to-market thinking and funnel strategy to every account he scales.</p>
+          <a href="https://www.linkedin.com/in/mausamarora/" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 11.02 5 2.5 2.5 0 01-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.2 21 14.5V21h-4v-5.8c0-1.4 0-3.2-1.95-3.2S12.8 13.5 12.8 15.1V21H9z"/></svg>LinkedIn</a>
+        </div>
+      </div>
+      <div class="card person">
+        <div class="avatar"><img src="/ecommerce/img/kunal-mandal.jpg" alt="Kunal Mandal" loading="lazy"></div>
+        <div>
+          <h3>Kunal Mandal</h3>
+          <p class="role">Co-founder · Meta strategy</p>
+          <p>$3.2M+ managed across 30+ brands in ecommerce and leadgen. A hands-on Meta strategist who runs full-funnel systems across Meta and Google.</p>
+          <a href="https://www.linkedin.com/in/kunal-meta-ads/" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 11.02 5 2.5 2.5 0 01-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.2 21 14.5V21h-4v-5.8c0-1.4 0-3.2-1.95-3.2S12.8 13.5 12.8 15.1V21H9z"/></svg>LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div class="team-strip">
+      <div class="faces">
+        <img src="/ecommerce/img/founder1.png" alt="Acquirely team member" loading="lazy">
+        <img src="/ecommerce/img/founder2.png" alt="Acquirely team member" loading="lazy">
+        <img src="/ecommerce/img/founder3.png" alt="Acquirely team member" loading="lazy">
+        <img src="/ecommerce/img/founder4.png" alt="Acquirely team member" loading="lazy">
+        <img src="/ecommerce/img/founder5.png" alt="Acquirely team member" loading="lazy">
+      </div>
+      <span>Plus the strategists, editors and designers behind every Pack</span>
     </div>
   </div>
 </section>
@@ -259,47 +478,53 @@ ${inHouse()}
 <section class="band white" id="faq">
   <div class="wrap">
     <div class="head">
-      <span class="eyebrow">Got questions?</span>
-      <h2>Frequently Asked Questions</h2>
-      <p>Everything DTC founders ask before partnering with us. Can't find your answer? <a href="${BOOK}" ${ext} style="color:var(--indigo-2);font-weight:600">Talk to us directly.</a></p>
+      <span class="eyebrow">FAQ</span>
+      <h2>Questions founders ask us</h2>
     </div>
-    ${faqList(faqs)}
-  </div>
-</section>
-
-<!-- ============ SCALING FRAMEWORK ============ -->
-<section class="band">
-  <div class="wrap">
-    <div class="head">
-      <span class="eyebrow">Scaling Framework</span>
-      <h2>What Does It Take to Scale From <span class="grad">$10K to $100K+?</span></h2>
-      <p>Four critical levers separate stagnant brands from scalable ones.</p>
-    </div>
-    <div class="d-cards four">${levers.map(([ic, o, t, d]) => `
-      <div class="card d-card reveal"><span class="ic${o ? " o" : ""}">${icon(ic, o ? "#F37513" : "#2B7FFF")}</span><h3>${t}</h3><p>${d}</p></div>`).join("")}
+    <div class="faq">
+      <details><summary>How quickly will I see results?</summary><p>First winning creatives usually show up in 3–6 weeks. Structured scaling follows once we have a baseline. TacTow went 5x in one quarter; Creste moved in two months.</p></details>
+      <details><summary>How soon do campaigns go live?</summary><p>As soon as ad account access, pixel checks and your first creative Pack are done. We'll give you an exact date on the diagnosis call.</p></details>
+      <details><summary>What if we don't hit our ROAS targets?</summary><p>We give the system 75–90 days, because Micro Analysis needs 90 days of your data. Along the way, every scale or cut decision is shown to you with the numbers behind it, so you always know where you stand.</p></details>
+      <details><summary>Are creatives included?</summary><p>Yes. A weekly creative Pack, plus influencer management, is part of the fee. Product shoots and paid creator fees are billed separately.</p></details>
+      <details><summary>Do you also handle Amazon, SEO or social?</summary><p>Meta and Google are where most D2C brands scale first, so they're our core. We also run Amazon and marketplace ads, quick-commerce ads, CRO, websites and social media as add-ons.</p></details>
+      <details><summary>Do you run campaigns outside India?</summary><p>Yes. We manage accounts for brands in Canada, the USA and other markets with the same system.</p></details>
     </div>
   </div>
 </section>
 
-<!-- ============ FINAL CTA ============ -->
-<section class="band white" id="book">
+<!-- ============ FINAL CTA (matches "Ready to Grow" card) ============ -->
+<section class="band" id="book">
   <div class="wrap">
     <div class="dcard">
       <div>
-        <h2>Ready to Break Past <span class="grad">$10K per Month?</span></h2>
-        <p style="margin-top:12px">If you're serious about building a predictable revenue engine with scalable Meta Ads, let's talk.</p>
+        <h2>Stuck at $10K, $20K or 2.5 ROAS? <span class="grad">So were they.</span></h2>
+        <p style="margin-top:12px">Book a 30-minute Growth Diagnosis. We'll look at your account, show you where it's leaking, and tell you straight whether the Flywheel fits.</p>
+        <ul class="ticks">
+          <li>Free Meta ad account and funnel audit</li>
+          <li>30-minute diagnosis call, no obligation</li>
+          <li>A straight answer on whether we're the right fit</li>
+        </ul>
       </div>
       <div style="display:grid;align-content:center">
         <span class="eyebrow">Your move</span>
-        <a class="btn blue" href="${BOOK}" ${ext} style="margin-top:16px;width:100%;padding:16px 22px;font-size:16px">Book Your Free Growth Audit ${ARROW}</a>
+        <h3 style="margin-top:10px">Book your diagnosis call</h3>
+        <a class="btn blue" href="${BOOK}" target="_blank" rel="noopener nofollow" style="margin-top:22px;width:100%;padding:16px 22px;font-size:16px">Book Your Free Call! <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>3 spots open this month. We reply within 24 hours.</p>
       </div>
     </div>
   </div>
 </section>
 
-${footer([["#results", "Case Studies"], ["#pricing", "Pricing"], ["#faq", "FAQ"]])}
+<footer>
+  <div class="wrap">
+    <div class="fine">
+      <p>© 2026 Acquirely. All rights reserved.</p>
+      <p>This site is not part of the Meta or Facebook website and is not endorsed by Meta Platforms, Inc. Meta and Facebook are trademarks of Meta Platforms, Inc.</p>
+    </div>
+  </div>
+</footer>
 
-${mcta("Book Your Free Growth Audit")}
+<div class="mcta"><a class="btn" href="${BOOK}" target="_blank" rel="noopener nofollow">Book a Growth Diagnosis Call</a></div>
 `;
 
 export default withImgDims(markup);

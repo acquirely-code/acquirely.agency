@@ -59,6 +59,22 @@ html[data-theme=dark]:has(.ecom),html[data-theme=dark]:has(.ecom) body{backgroun
 [data-theme=dark] .ecom .fly svg text[fill="#0F172A"]{fill:var(--ink)}
 [data-theme=dark] .ecom .fly svg text[fill="#71717B"]{fill:var(--muted)}
 
+/* ---------- Lead gen (.lg) ---------- */
+[data-theme=dark] .lg .lg-bl-txt{color:#0F172A}
+[data-theme=dark] .lg .lg-live{background:rgba(74,222,128,.14)}
+[data-theme=dark] .lg .lg-shot-ph > div{background:var(--soft);border-color:#3A4570}
+[data-theme=dark] .lg .lg-bars{background:var(--card);border-color:var(--line)}
+[data-theme=dark] .lg .lg-bar-r i{background:#2A3344}
+[data-theme=dark] .lg .andro .lg-callout{background:var(--card);color:#FDBA74}
+[data-theme=dark] .lg .lg-inc li::before{background-color:rgba(129,140,248,.18)}
+[data-theme=dark] .lg .lg-inc li.off{color:#5B6476;text-decoration-color:#3A4356}
+[data-theme=dark] .lg .lg-inc li.off::before{background-color:var(--soft)}
+[data-theme=dark] .lg .lg-tier .btn.line{border-color:#3A4570}
+[data-theme=dark] .lg .lg-tier .btn.line.dk{border-color:var(--ink)}
+[data-theme=dark] .lg .lg-tier .btn.line.dk:hover{color:var(--bg)}
+[data-theme=dark] .lg .lg-floor{border-color:#34406A}
+[data-theme=dark] .lg .lg-floor h3 em{background:var(--card);border-color:#34406A}
+
 /* ---------- Homepage (.hm) ---------- */
 [data-theme=dark] .hm .hm-tabs,[data-theme=dark] .hm .hm-dd-menu,[data-theme=dark] .hm .hm-burger{background:var(--card)}
 [data-theme=dark] .hm .hm-dd-menu > a:not(.hm-dd-all):hover,[data-theme=dark] .hm .hm-dd-mob a:hover,[data-theme=dark] .hm .hm-dd-mob a:active{background:var(--soft)}
@@ -67,12 +83,4 @@ html[data-theme=dark]:has(.ecom),html[data-theme=dark]:has(.ecom) body{backgroun
 [data-theme=dark] .hm .andro p b{color:#FDBA74}
 [data-theme=dark] .hm .hm-svc li::before{background-color:rgba(129,140,248,.18)}
 
-/* ---------- This site's components (d2c.css) ---------- */
-[data-theme=dark] .ecom .d-tabs,[data-theme=dark] .ecom .d-more > summary > span{background:var(--card)}
-[data-theme=dark] .ecom .d-badge,[data-theme=dark] .ecom .hub-note{background:rgba(129,140,248,.16);border-color:#34406A}
-[data-theme=dark] .ecom .hub-note .ic{background:var(--soft)}
-[data-theme=dark] .ecom .d-badge.o,[data-theme=dark] .ecom .d-stage .d-badge{color:#FDBA74;background:rgba(249,115,22,.14)}
-[data-theme=dark] .ecom .hm-svc .d-no{color:rgba(255,255,255,.06)}
-[data-theme=dark] .ecom .d-checks li::before{background-color:rgba(129,140,248,.18)}
-[data-theme=dark] .ecom .d-yes li::before{background-color:rgba(74,222,128,.14)}
-[data-theme=dark] .ecom .d-more,[data-theme=dark] .ecom .d-more[open],[data-theme=dark] .ecom .hm-dd,[data-theme=dark] .ecom .hm-dd[open]{background:none}
+[data-theme=dark] .ecom .hm-dd,[data-theme=dark] .ecom .hm-dd[open]{background:none}

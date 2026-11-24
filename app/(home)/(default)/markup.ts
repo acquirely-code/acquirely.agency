@@ -141,11 +141,14 @@ ${siteNav(true, true, CTA)}
     <div class="ph-track">
       ${phone("tactow.in", "09-tactow-website-on-mobile.jpg", "TacTow", "3D wooden puzzles")}
       ${phone("rightsourceaviation.com", "33-rsa-aviation-website-on-mobile.jpg", "RSA Aviation", "Pilot training academy")}
+      ${phone("adasupply.com", "35-ada-supplies-website-on-mobile.jpg", "ADA Supplies", "Safety equipment · USA")}
       ${phone("gharaana", "10-gharaana-website-on-mobile.jpg", "Gharaana", "Furniture")}
       ${phone("internationalschooling.org", "30-international-schooling-website-on-mobile.jpg", "International Schooling", "Online school")}
       ${phone("patoola", "11-patoola-website-on-mobile.jpg", "Patoola", "Indo-Western fashion")}
+      ${phone("silverzone.org", "36-silverzone-website-on-mobile.jpg", "SilverZone", "School Olympiads")}
       ${phone("kashti.com", "31-kashti-website-on-mobile.jpg", "Kashti", "Fintech app")}
       ${phone("crestekids.com", "12-creste-kids-website-on-mobile.jpg", "Creste Kids", "DIY craft kits")}
+      ${phone("2ndcareers.com", "34-2nd-careers-website-on-mobile.jpg", "2nd Careers", "Career platform")}
       ${phone("globalproptech.in", "29-global-proptech-website-on-mobile.jpg", "Global Proptech", "Luxury real estate · Gurugram")}
       ${phone("nostrain.in", "32-nostrain-website-on-mobile.jpg", "NoStrain", "Footwear")}
       ${phone("sevora", "13-sevora-website-on-mobile.jpg", "Sevora", "Fashion")}

@@ -8,7 +8,7 @@ import "@/app/ecommerce/ecommerce.css";
 import "@/app/ecommerce/home.css";
 import "@/app/ecommerce/ecommerce-dark.css";
 
-// The acquirely.in homepage. Kept apart from Landing so d2c.css can't change it.
+// The acquirely.in homepage.
 export default function HomeLanding() {
   const rootRef = useRef<HTMLDivElement>(null);
   useLandingScripts(rootRef);

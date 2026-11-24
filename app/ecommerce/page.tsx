@@ -1,6 +1,12 @@
-import Landing from "./Landing";
-import markup from "./markup";
+import type { Metadata } from "next";
+import EcommerceLanding from "./EcommerceLanding";
+
+export const metadata: Metadata = {
+  title: "Meta Ads Agency for D2C & Ecommerce Brands | Acquirely",
+  description:
+    "How 20+ D2C and ecommerce brands scaled Meta Ads profitably after Andromeda with Acquirely's A3 Flywheel. 5x revenue, ROAS 2.7 → 4.2, month-to-month.",
+};
 
 export default function EcommercePage() {
-  return <Landing markup={markup} />;
+  return <EcommerceLanding />;
 }
